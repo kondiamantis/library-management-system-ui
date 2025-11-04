@@ -1,1 +1,225 @@
-<p>dashboard works!</p>
+<div class="p-4">
+    <!-- Header -->
+    <div class="flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="text-4xl font-bold text-900 m-0">📊 Library Dashboard</h1>
+        <p class="text-600 mt-2">Overview of your library system</p>
+      </div>
+      <p-button 
+        icon="pi pi-refresh" 
+        label="Refresh" 
+        (onClick)="refresh()" 
+        [loading]="loading"
+        severity="secondary"
+        [rounded]="true">
+      </p-button>
+    </div>
+  
+    <!-- Statistics Cards -->
+    <div class="grid" *ngIf="stats">
+    <div class="grid" *ngIf="stats">
+      <!-- Total Books Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-books">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Total Books</div>
+              <div class="text-4xl font-bold text-900">{{ stats.totalBooks }}</div>
+            </div>
+            <div class="stat-icon-books">
+              <i class="pi pi-book text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <i class="pi pi-arrow-up text-green-500 mr-2"></i>
+            <span class="text-green-500 font-medium">Books in catalog</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Available Books Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-available">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Available Books</div>
+              <div class="text-4xl font-bold text-900">{{ stats.availableBooks }}</div>
+            </div>
+            <div class="stat-icon-available">
+              <i class="pi pi-check-circle text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <i class="pi pi-circle-fill text-green-500 mr-2 text-xs"></i>
+            <span class="text-600">Ready to borrow</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Borrowed Books Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-borrowed">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Borrowed Books</div>
+              <div class="text-4xl font-bold text-900">{{ stats.borrowedBooks }}</div>
+            </div>
+            <div class="stat-icon-borrowed">
+              <i class="pi pi-shopping-cart text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <i class="pi pi-circle-fill text-orange-500 mr-2 text-xs"></i>
+            <span class="text-600">Currently out</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Total Members Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-members">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Total Members</div>
+              <div class="text-4xl font-bold text-900">{{ stats.totalMembers }}</div>
+            </div>
+            <div class="stat-icon-members">
+              <i class="pi pi-users text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <i class="pi pi-users text-blue-500 mr-2"></i>
+            <span class="text-600">Registered members</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Active Members Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-active-members">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Active Members</div>
+              <div class="text-4xl font-bold text-900">{{ stats.activeMembers }}</div>
+            </div>
+            <div class="stat-icon-active-members">
+              <i class="pi pi-user-check text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <p-badge [value]="'Active'" severity="success"></p-badge>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Active Borrowings Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-borrowings">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Active Borrowings</div>
+              <div class="text-4xl font-bold text-900">{{ stats.activeBorrowings }}</div>
+            </div>
+            <div class="stat-icon-borrowings">
+              <i class="pi pi-calendar text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <i class="pi pi-circle-fill text-purple-500 mr-2 text-xs"></i>
+            <span class="text-600">Ongoing loans</span>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Overdue Books Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-overdue">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Overdue Books</div>
+              <div class="text-4xl font-bold text-900">{{ stats.overdueBorrowings }}</div>
+            </div>
+            <div class="stat-icon-overdue">
+              <i class="pi pi-exclamation-triangle text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <p-badge [value]="'Alert'" severity="danger"></p-badge>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Late Fees Card -->
+      <div class="col-12 md:col-6 lg:col-3">
+        <div class="surface-card shadow-2 p-4 border-round stat-card-fees">
+          <div class="flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="text-900 font-medium mb-2">Total Late Fees</div>
+              <div class="text-4xl font-bold text-900">€{{ stats.totalLateFees.toFixed(2) }}</div>
+            </div>
+            <div class="stat-icon-fees">
+              <i class="pi pi-euro text-4xl"></i>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <i class="pi pi-money-bill text-pink-500 mr-2"></i>
+            <span class="text-600">Collected fees</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Chart and Table Section -->
+    <div class="grid mt-4">
+      <!-- Chart Card -->
+      <div class="col-12 lg:col-6">
+        <p-card header="Books Distribution" styleClass="h-full">
+          <p-chart 
+            type="doughnut" 
+            [data]="chartData" 
+            [options]="chartOptions"
+            [style]="{ height: '350px' }">
+          </p-chart>
+        </p-card>
+      </div>
+  
+      <!-- Overdue Table Card -->
+      <div class="col-12 lg:col-6">
+        <p-card header="Recent Overdue Books" styleClass="h-full">
+          <p-table 
+            [value]="overdueBorrowings" 
+            [tableStyle]="{ 'min-width': '100%' }"
+            styleClass="p-datatable-striped"
+            *ngIf="overdueBorrowings.length > 0; else noOverdue">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Book</th>
+                <th>Member</th>
+                <th>Due Date</th>
+                <th>Status</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-borrowing>
+              <tr>
+                <td>{{ borrowing.book.title }}</td>
+                <td>{{ borrowing.member.name }}</td>
+                <td>{{ borrowing.dueDate }}</td>
+                <td>
+                  <p-tag 
+                    [value]="borrowing.status" 
+                    [severity]="getStatusSeverity(borrowing.status)">
+                  </p-tag>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <ng-template #noOverdue>
+            <div class="text-center py-6">
+              <i class="pi pi-check-circle text-6xl text-green-500 mb-3"></i>
+              <p class="text-xl text-600 m-0">No overdue books! 🎉</p>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    </div>
+  </div>

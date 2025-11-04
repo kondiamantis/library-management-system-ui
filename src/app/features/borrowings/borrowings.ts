@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './borrowings.html',
   styleUrl: './borrowings.scss',
 })
-export class Borrowings {
+export class BorrowingsComponent {
 
 }

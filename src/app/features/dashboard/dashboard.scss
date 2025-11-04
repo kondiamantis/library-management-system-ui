@@ -1,0 +1,159 @@
+/* Stat Card Custom Styles with Gradients */
+.stat-card-books {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-books:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3) !important;
+  }
+  
+  .stat-card-books .stat-icon-books {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .stat-card-available {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-available:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3) !important;
+  }
+  
+  .stat-card-available .stat-icon-available {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .stat-card-borrowed {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-borrowed:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3) !important;
+  }
+  
+  .stat-card-borrowed .stat-icon-borrowed {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .stat-card-members {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-members:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3) !important;
+  }
+  
+  .stat-card-members .stat-icon-members {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .stat-card-active-members {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-active-members:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(6, 182, 212, 0.3) !important;
+  }
+  
+  .stat-card-active-members .stat-icon-active-members {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .stat-card-borrowings {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-borrowings:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3) !important;
+  }
+  
+  .stat-card-borrowings .stat-icon-borrowings {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .stat-card-overdue {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-overdue:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3) !important;
+  }
+  
+  .stat-card-overdue .stat-icon-overdue {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .stat-card-fees {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .stat-card-fees:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(236, 72, 153, 0.3) !important;
+  }
+  
+  .stat-card-fees .stat-icon-fees {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  /* Override default card text colors for gradient cards */
+  .stat-card-books .text-900,
+  .stat-card-available .text-900,
+  .stat-card-borrowed .text-900,
+  .stat-card-members .text-900,
+  .stat-card-active-members .text-900,
+  .stat-card-borrowings .text-900,
+  .stat-card-overdue .text-900,
+  .stat-card-fees .text-900 {
+    color: white !important;
+  }
+  
+  .stat-card-books .text-600,
+  .stat-card-available .text-600,
+  .stat-card-borrowed .text-600,
+  .stat-card-members .text-600,
+  .stat-card-active-members .text-600,
+  .stat-card-borrowings .text-600,
+  .stat-card-overdue .text-600,
+  .stat-card-fees .text-600 {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
