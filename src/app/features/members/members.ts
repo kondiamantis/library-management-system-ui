@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-members',
-  imports: [],
+  standalone: false,
   templateUrl: './members.html',
   styleUrl: './members.scss',
 })

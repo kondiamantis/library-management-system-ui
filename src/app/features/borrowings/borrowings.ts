@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-borrowings',
-  imports: [],
+  standalone: false,
   templateUrl: './borrowings.html',
   styleUrl: './borrowings.scss',
 })

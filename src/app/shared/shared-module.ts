@@ -1,10 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Navbar } from './navbar/navbar';
+import { Layout } from './layout/layout';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    Navbar,
+    Layout,
+
+  ],
   imports: [
     CommonModule
   ]
