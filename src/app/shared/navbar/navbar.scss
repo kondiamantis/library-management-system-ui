@@ -13,7 +13,7 @@ $hover: rgba(255, 255, 255, 0.12);
   padding: 0.75rem 1.5rem;
   // border-radius: 4px;
   background: linear-gradient(135deg, color.scale($darkblue, $lightness: 10%), $darkblue);
-  box-shadow: 0 20px 35px rgba(139, 29, 60, 0.25);
+  box-shadow: 0 20px 35px rgba(15, 47, 97, 0.25);
   overflow: hidden;
 }
 
@@ -147,7 +147,7 @@ $hover: rgba(255, 255, 255, 0.12);
   width: 70px;
   border-radius: 10px;
   object-fit: cover;
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 8px 18px rgba(247, 245, 245, 0.28));
 }
 
 @media (max-width: 768px) {
