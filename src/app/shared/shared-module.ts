@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Navbar } from './navbar/navbar';
 import { Layout } from './layout/layout';
+import { MenubarModule } from 'primeng/menubar';
 
 
 
@@ -12,6 +13,12 @@ import { Layout } from './layout/layout';
 
   ],
   imports: [
+    CommonModule,
+    MenubarModule
+  ],
+  exports: [
+    Navbar,
+    Layout,
     CommonModule
   ]
 })

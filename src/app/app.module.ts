@@ -7,6 +7,7 @@ import { App } from './app';
 import { routes } from './app.routes';
 import { SharedModule } from './shared/shared-module';
 import { FeaturesModule } from './features/features-module';
+import { CoreModule } from './core/core-module';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { FeaturesModule } from './features/features-module';
     RouterModule.forRoot(routes),
     SharedModule,
     FeaturesModule,
+    CoreModule,
   ],
   bootstrap: [App]
 })
