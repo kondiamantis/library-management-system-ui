@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Navbar } from './navbar/navbar';
 import { Layout } from './layout/layout';
 import { MenubarModule } from 'primeng/menubar';
+import { ScrollTopModule } from 'primeng/scrolltop';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -14,12 +16,15 @@ import { MenubarModule } from 'primeng/menubar';
   ],
   imports: [
     CommonModule,
-    MenubarModule
+    MenubarModule,
+    ScrollTopModule,
+    RouterModule
   ],
   exports: [
     Navbar,
     Layout,
-    CommonModule
+    CommonModule,
+    RouterModule
   ]
 })
 export class SharedModule { }
