@@ -124,9 +124,29 @@ $hover: rgba(255, 255, 255, 0.12);
   }
 }
 
-.header-logo {
-  height: 64px;
-  width: auto;
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 0.4rem 1.25rem;
+  margin-bottom: 0.5rem;
+  // background: $darkblue;
+  color: $darkblue;
+  // border-radius: 12px;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo {
+  height: 70px;
+  width: 70px;
+  border-radius: 10px;
+  object-fit: cover;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.28));
 }
 
@@ -136,8 +156,14 @@ $hover: rgba(255, 255, 255, 0.12);
     border-radius: 12px;
   }
 
-  .header-logo {
-    height: 44px;
+  .toolbar-container {
+    padding: 0.35rem 1rem;
+    border-radius: 10px;
+  }
+
+  .logo {
+    height: 32px;
+    width: 32px;
   }
 }
 
@@ -147,8 +173,9 @@ $hover: rgba(255, 255, 255, 0.12);
     border-radius: 10px;
   }
 
-  .header-logo {
-    height: 32px;
+  .logo {
+    height: 28px;
+    width: 28px;
   }
 }
 

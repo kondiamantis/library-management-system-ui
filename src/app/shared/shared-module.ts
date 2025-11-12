@@ -5,8 +5,8 @@ import { Layout } from './layout/layout';
 import { MenubarModule } from 'primeng/menubar';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { RouterModule } from '@angular/router';
-
-
+import { ToolbarModule } from 'primeng/toolbar';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -18,7 +18,9 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     MenubarModule,
     ScrollTopModule,
-    RouterModule
+    RouterModule,
+    ToolbarModule,
+    ButtonModule
   ],
   exports: [
     Navbar,
