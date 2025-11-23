@@ -23,16 +23,20 @@
     font-size: 1.1rem;
   }
 
-  // Active/hover states
-  .p-menubar-item-active > .p-menubar-item-content,
+  // Hover state
   .p-menubar-item-content:hover {
-    background: var(--primary-color);
-    color: var(--primary-contrast-color);
+    background: var(--surface-100);
   }
 
-  .p-menubar-item-active .p-menubar-item-icon,
-  .p-menubar-item-content:hover .p-menubar-item-icon {
-    color: var(--primary-contrast-color);
+  // Active tab - simple bottom border indicator
+  .active-menu-item .p-menubar-item-content {
+    border-bottom: 3px solid var(--primary-color);
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .active-menu-item .p-menubar-item-icon {
+    color: var(--primary-color);
   }
 }
 

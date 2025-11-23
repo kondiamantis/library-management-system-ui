@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -7,8 +9,10 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
-export class Navbar {
-  items: MenuItem[] | undefined;
+export class Navbar implements OnInit {
+  items: MenuItem[] = [];
+
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.items = [
@@ -33,6 +37,20 @@ export class Navbar {
         routerLink: '/borrowings'
       }
     ];
+
+    // Set active item on init and on route changes
+    this.setActiveItem(this.router.url);
+    
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.setActiveItem(event.url);
+      });
   }
 
+  private setActiveItem(url: string): void {
+    this.items.forEach(item => {
+      item.styleClass = item.routerLink === url ? 'active-menu-item' : '';
+    });
+  }
 }
