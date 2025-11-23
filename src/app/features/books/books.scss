@@ -13,8 +13,30 @@
     }
 
     .p-datatable .p-datatable-thead > tr > th {
-      background-color: var(--surface-50);
+      background-color: var(--primary-color);
       font-weight: 600;
+      color: white;
+    }
+    
+    // Make sort icons white
+    .p-datatable .p-datatable-thead > tr > th {
+      .p-icon {
+        color: white !important;
+      }
+      
+      svg {
+        fill: white !important;
+        color: white !important;
+      }
+    }
+    
+    // Rounded corners on first and last header cells
+    .p-datatable .p-datatable-thead > tr > th:first-child {
+      border-top-left-radius: 8px;
+    }
+    
+    .p-datatable .p-datatable-thead > tr > th:last-child {
+      border-top-right-radius: 8px;
     }
 
     .p-drawer .p-drawer-content {

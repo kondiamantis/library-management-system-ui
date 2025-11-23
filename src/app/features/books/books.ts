@@ -154,6 +154,28 @@ export class BooksComponent implements OnInit {
     alert(`Borrowing functionality for "${book.title}" will be implemented soon!`);
   }
 
+  confirmDelete(book: Book): void {
+    const confirmed = confirm(`Are you sure you want to delete "${book.title}"?\n\nThis action cannot be undone.`);
+    
+    if (confirmed && book.id) {
+      this.deleteBook(book.id);
+    }
+  }
+
+  deleteBook(bookId: number): void {
+    this.bookService.deleteBook(bookId).subscribe({
+      next: () => {
+        // Remove from local array
+        this.books = this.books.filter(b => b.id !== bookId);
+        this.applyFilters();
+      },
+      error: (error) => {
+        console.error('Error deleting book:', error);
+        alert('Failed to delete book. Please try again.');
+      }
+    });
+  }
+
   getAvailabilityStatus(book: Book): 'success' | 'warn' | 'danger' {
     if (book.availableCopies === 0) {
       return 'danger';

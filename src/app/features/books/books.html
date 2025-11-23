@@ -1,10 +1,10 @@
-<div class="p-4">
+<div class="p-2">
   <!-- Search and Filter Section -->
-  <p-card class="mb-4">
+  <p-card class="mb-2">
     <ng-template pTemplate="header">
       <div class="px-3 pt-3">
-        <h2 class="text-2xl font-bold m-0 text-900">Book Management</h2>
-        <p class="text-sm text-600 mt-1 mb-0">Search and filter books in the library</p>
+        <!-- <h2 class="text-2xl font-bold m-0 text-900">Book Management</h2> -->
+        <!-- <p class="text-sm text-600 mt-1 mb-0">Search and filter books in the library</p> -->
       </div>
     </ng-template>
     
@@ -92,21 +92,6 @@
 
   <!-- Books Table -->
   <p-card>
-    <ng-template pTemplate="header">
-      <div class="flex align-items-center justify-content-between px-3 pt-3">
-        <div>
-          <h3 class="text-xl font-semibold m-0 text-900">Books List</h3>
-          <p class="text-sm text-600 mt-1 mb-0">Total: {{ filteredBooks.length }} books</p>
-        </div>
-        <p-button 
-          icon="pi pi-refresh" 
-          [rounded]="true"
-          [outlined]="true"
-          (onClick)="loadBooks()">
-        </p-button>
-      </div>
-    </ng-template>
-
     <p-table 
       [value]="filteredBooks" 
       [loading]="loading"
@@ -116,17 +101,32 @@
       [showCurrentPageReport]="true"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} books"
       styleClass="p-datatable-sm"
-      [tableStyle]="{ 'min-width': '75rem' }">
+      [tableStyle]="{ 'min-width': '75rem' }"
+      stripedRows>
       
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="title">Title</th>
-          <th pSortableColumn="author">Author</th>
-          <th pSortableColumn="genre">Genre</th>
-          <th pSortableColumn="publicationYear">Year</th>
-          <th pSortableColumn="availableCopies">Available</th>
-          <th pSortableColumn="totalCopies">Total</th>
-          <th>Status</th>
+          <th pSortableColumn="title">Title
+            <p-sortIcon field="title"></p-sortIcon>
+          </th>
+          <th pSortableColumn="author">Author
+            <p-sortIcon field="author"></p-sortIcon>
+          </th>
+          <th pSortableColumn="genre">Genre
+            <p-sortIcon field="genre"></p-sortIcon>
+          </th>
+          <th pSortableColumn="publicationYear">Year
+            <p-sortIcon field="publicationYear"></p-sortIcon>
+          </th>
+          <th pSortableColumn="availableCopies">Available
+            <p-sortIcon field="availableCopies"></p-sortIcon>
+          </th>
+          <th pSortableColumn="totalCopies">Total
+            <p-sortIcon field="totalCopies"></p-sortIcon>
+          </th>
+          <th>Status
+            <p-sortIcon field="status"></p-sortIcon>
+          </th>
           <th>Actions</th>
         </tr>
       </ng-template>
@@ -159,7 +159,7 @@
                 icon="pi pi-pencil" 
                 [rounded]="true"
                 [outlined]="true"
-                severity="info"
+                severity="warn"
                 size="small"
                 (onClick)="openEditSidebar(book)"
                 pTooltip="Edit Book"
@@ -174,6 +174,16 @@
                 [disabled]="book.availableCopies === 0"
                 (onClick)="borrowBook(book)"
                 pTooltip="Borrow Book"
+                tooltipPosition="top">
+              </p-button>
+              <p-button 
+                icon="pi pi-trash" 
+                [rounded]="true"
+                [outlined]="true"
+                severity="danger"
+                size="small"
+                (onClick)="confirmDelete(book)"
+                pTooltip="Delete Book"
                 tooltipPosition="top">
               </p-button>
             </div>
