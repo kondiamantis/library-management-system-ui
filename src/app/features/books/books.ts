@@ -118,6 +118,12 @@ export class BooksComponent implements OnInit {
     this.filteredBooks = this.books;
   }
 
+  openCreateForm(): void {
+    this.editedBook = this.getEmptyBook();
+    this.editMode = false;
+    this.sidebarVisible = true;
+  }
+
   openEditSidebar(book: Book): void {
     this.selectedBook = book;
     this.editedBook = { ...book };
@@ -133,23 +139,40 @@ export class BooksComponent implements OnInit {
   }
 
   saveBook(): void {
-    if (!this.editedBook.id) {
-      return;
-    }
-
-    this.bookService.updateBook(this.editedBook.id, this.editedBook).subscribe({
-      next: (updatedBook) => {
-        const index = this.books.findIndex(b => b.id === updatedBook.id);
-        if (index !== -1) {
-          this.books[index] = updatedBook;
-        }
-        this.applyFilters();
-        this.closeSidebar();
-      },
-      error: (error) => {
-        console.error('Error updating book:', error);
+    if (this.editMode) {
+      // Update existing book
+      if (!this.editedBook.id) {
+        return;
       }
-    });
+
+      this.bookService.updateBook(this.editedBook.id, this.editedBook).subscribe({
+        next: (updatedBook) => {
+          const index = this.books.findIndex(b => b.id === updatedBook.id);
+          if (index !== -1) {
+            this.books[index] = updatedBook;
+          }
+          this.applyFilters();
+          this.closeSidebar();
+        },
+        error: (error) => {
+          console.error('Error updating book:', error);
+          alert('Failed to update book. Please try again.');
+        }
+      });
+    } else {
+      // Create new book
+      this.bookService.createBook(this.editedBook).subscribe({
+        next: (newBook) => {
+          this.books.push(newBook);
+          this.applyFilters();
+          this.closeSidebar();
+        },
+        error: (error) => {
+          console.error('Error creating book:', error);
+          alert('Failed to create book. Please try again.');
+        }
+      });
+    }
   }
 
   borrowBook(book: Book): void {

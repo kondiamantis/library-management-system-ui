@@ -95,6 +95,23 @@
 
   <!-- Books Table -->
   <p-card>
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center justify-content-between px-3 pt-3">
+        <div>
+          <h3 class="text-xl font-semibold m-0 text-900">Books List</h3>
+          <p class="text-sm text-600 mt-1 mb-0">Total: {{ filteredBooks.length }} books</p>
+        </div>
+        <div class="flex gap-2">
+          <p-button 
+            label="Add New Book"
+            icon="pi pi-plus" 
+            (onClick)="openCreateForm()"
+            severity="info">
+          </p-button>
+        </div>
+      </div>
+    </ng-template>
+
     <p-table 
       [value]="filteredBooks" 
       [loading]="loading"
@@ -215,8 +232,8 @@
   
   <ng-template pTemplate="header">
     <div class="flex align-items-center gap-2">
-      <i class="pi pi-pencil text-xl"></i>
-      <span class="font-bold text-xl">Edit Book</span>
+      <i [class]="editMode ? 'pi pi-pencil text-xl' : 'pi pi-plus text-xl'"></i>
+      <span class="font-bold text-xl">{{ editMode ? 'Edit Book' : 'Add New Book' }}</span>
     </div>
   </ng-template>
 
@@ -348,7 +365,7 @@
         (onClick)="closeSidebar()">
       </p-button>
       <p-button 
-        label="Save Changes" 
+        [label]="editMode ? 'Save Changes' : 'Create Book'" 
         icon="pi pi-check"
         (onClick)="saveBook()">
       </p-button>
