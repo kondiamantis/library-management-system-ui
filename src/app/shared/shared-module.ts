@@ -7,6 +7,8 @@ import { ScrollTopModule } from 'primeng/scrolltop';
 import { RouterModule } from '@angular/router';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { ButtonModule } from 'primeng/button';
     ScrollTopModule,
     RouterModule,
     ToolbarModule,
-    ButtonModule
+    ButtonModule,
+    TooltipModule,
+    TagModule
   ],
   exports: [
     Navbar,

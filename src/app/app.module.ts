@@ -41,7 +41,7 @@ export class AppModule {
     this.primeng.theme.set({
       preset: Aura,
       options: {
-        darkModeSelector: 'none'
+        darkModeSelector: '.dark-mode'
       }
     });
     this.primeng.ripple.set(true);

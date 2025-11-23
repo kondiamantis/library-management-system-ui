@@ -3,6 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../auth/services/auth.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { User } from '../../auth/models/user.model';
 
 @Component({
@@ -17,7 +18,8 @@ export class Navbar implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
@@ -78,5 +80,13 @@ export class Navbar implements OnInit {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
+  }
+
+  isDarkMode(): boolean {
+    return this.themeService.isDarkMode();
   }
 }
