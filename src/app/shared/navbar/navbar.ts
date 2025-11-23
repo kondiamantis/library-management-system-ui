@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../auth/services/auth.service';
+import { User } from '../../auth/models/user.model';
 
 @Component({
   selector: 'app-navbar',
@@ -11,10 +13,31 @@ import { filter } from 'rxjs/operators';
 })
 export class Navbar implements OnInit {
   items: MenuItem[] = [];
+  currentUser: User | null = null;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    // Subscribe to current user
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.buildMenu();
+    });
+
+    // Set active item on init and on route changes
+    this.setActiveItem(this.router.url);
+    
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.setActiveItem(event.url);
+      });
+  }
+
+  private buildMenu(): void {
     this.items = [
       {
         label: 'Home',
@@ -27,30 +50,33 @@ export class Navbar implements OnInit {
         routerLink: '/books'
       },
       {
-        label: 'Members',
-        icon: 'pi pi-user',
-        routerLink: '/members'
-      },
-      {
         label: 'Borrowings',
-        icon: 'pi pi-book',
+        icon: 'pi pi-calendar',
         routerLink: '/borrowings'
       }
     ];
 
-    // Set active item on init and on route changes
-    this.setActiveItem(this.router.url);
-    
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        this.setActiveItem(event.url);
+    // Add Members menu only for admin
+    if (this.authService.isAdmin()) {
+      this.items.push({
+        label: 'Members',
+        icon: 'pi pi-users',
+        routerLink: '/members'
       });
+    }
   }
 
   private setActiveItem(url: string): void {
     this.items.forEach(item => {
       item.styleClass = item.routerLink === url ? 'active-menu-item' : '';
     });
+  }
+
+  getUserFullName(): string {
+    return this.authService.getUserFullName();
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }
