@@ -1,6 +1,87 @@
 <div class="p-2">
   <!-- Confirm Dialog -->
   <p-confirmdialog></p-confirmdialog>
+
+  <!-- Borrow Book Dialog -->
+  <p-dialog 
+    [(visible)]="borrowDialogVisible"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+    [header]="'Borrow Book'"
+    (onHide)="closeBorrowDialog()">
+    
+    <div class="flex flex-column gap-4">
+      <!-- Book Info -->
+      <div class="p-3 surface-100 border-round">
+        <p class="text-sm text-600 m-0 mb-1">Book to borrow:</p>
+        <p class="text-lg font-bold text-900 m-0">{{ selectedBookToBorrow?.title }}</p>
+        <p class="text-sm text-600 m-0">by {{ selectedBookToBorrow?.author }}</p>
+      </div>
+
+      <!-- Member Selection -->
+      <div class="field">
+        <p-floatlabel>
+          <p-select 
+            inputId="selectMember"
+            [(ngModel)]="selectedMemberId"
+            [options]="members"
+            optionValue="id"
+            [filter]="true"
+            filterBy="firstName,lastName,email"
+            placeholder="Select a member"
+            styleClass="w-full"
+            [showClear]="true">
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="selectedMemberId">
+                {{ getSelectedMemberName() }}
+              </div>
+            </ng-template>
+            <ng-template let-member pTemplate="item">
+              <div>
+                <div class="font-semibold">{{ getMemberFullName(member) }}</div>
+                <div class="text-sm text-600">{{ member.email }}</div>
+              </div>
+            </ng-template>
+          </p-select>
+          <label for="selectMember">Select Member *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Borrowing Days -->
+      <div class="field">
+        <p-floatlabel>
+          <p-inputnumber 
+            inputId="borrowDays"
+            [(ngModel)]="borrowingDays"
+            [min]="1"
+            [max]="90"
+            [showButtons]="true"
+            styleClass="w-full">
+          </p-inputnumber>
+          <label for="borrowDays">Borrowing Days</label>
+        </p-floatlabel>
+        <small class="text-600">Default: 14 days. Maximum: 90 days.</small>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-content-end">
+        <p-button 
+          label="Cancel" 
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="closeBorrowDialog()">
+        </p-button>
+        <p-button 
+          label="Confirm Borrowing" 
+          icon="pi pi-check"
+          severity="success"
+          [disabled]="!selectedMemberId"
+          (onClick)="confirmBorrowing()">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
   
   <!-- Search and Filter Section -->
   <p-card class="mb-2">

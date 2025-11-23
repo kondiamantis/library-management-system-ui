@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BookService } from '../../core/services/book.service';
+import { BorrowingService } from '../../core/services/borrowing.service';
+import { MemberService } from '../../core/services/member.service';
 import { Book } from '../../core/models/book.model';
+import { Member } from '../../core/models/member.model';
+import { BorrowingRequest } from '../../core/models/borrowing-request.model';
 import { BookGenre } from '../../shared/enums/book-genre.enum';
 import { BookStatus } from '../../shared/enums/book-status.enum';
 import { ConfirmationService } from 'primeng/api';
@@ -52,8 +56,17 @@ export class BooksComponent implements OnInit {
   // Edit form
   editedBook: Book = this.getEmptyBook();
 
+  // Borrow dialog
+  borrowDialogVisible: boolean = false;
+  selectedBookToBorrow: Book | null = null;
+  members: Member[] = [];
+  selectedMemberId: number | null = null;
+  borrowingDays: number = 14;
+
   constructor(
     private bookService: BookService,
+    private borrowingService: BorrowingService,
+    private memberService: MemberService,
     private confirmationService: ConfirmationService
   ) {}
 
@@ -176,9 +189,67 @@ export class BooksComponent implements OnInit {
   }
 
   borrowBook(book: Book): void {
-    // TODO: Implement borrow functionality
-    console.log('Borrow book:', book);
-    alert(`Borrowing functionality for "${book.title}" will be implemented soon!`);
+    this.selectedBookToBorrow = book;
+    this.selectedMemberId = null;
+    this.borrowingDays = 14;
+    this.loadMembers();
+    this.borrowDialogVisible = true;
+  }
+
+  loadMembers(): void {
+    this.memberService.getAllMembers().subscribe({
+      next: (data) => {
+        // Filter only active members
+        this.members = data.filter(m => m.isActive);
+      },
+      error: (error) => {
+        console.error('Error loading members:', error);
+        alert('Failed to load members. Please try again.');
+      }
+    });
+  }
+
+  confirmBorrowing(): void {
+    if (!this.selectedMemberId || !this.selectedBookToBorrow?.id) {
+      alert('Please select a member');
+      return;
+    }
+
+    const request: BorrowingRequest = {
+      bookId: this.selectedBookToBorrow.id,
+      memberId: this.selectedMemberId,
+      borrowingDays: this.borrowingDays
+    };
+
+    this.borrowingService.borrowBook(request).subscribe({
+      next: () => {
+        // Reload books to update available copies
+        this.loadBooks();
+        this.borrowDialogVisible = false;
+        alert(`Book "${this.selectedBookToBorrow?.title}" borrowed successfully!`);
+      },
+      error: (error) => {
+        console.error('Error borrowing book:', error);
+        const errorMessage = error.error?.message || 'Failed to borrow book. Please try again.';
+        alert(errorMessage);
+      }
+    });
+  }
+
+  closeBorrowDialog(): void {
+    this.borrowDialogVisible = false;
+    this.selectedBookToBorrow = null;
+    this.selectedMemberId = null;
+    this.borrowingDays = 14;
+  }
+
+  getMemberFullName(member: Member): string {
+    return `${member.firstName} ${member.lastName}`;
+  }
+
+  getSelectedMemberName(): string {
+    const member = this.members.find(m => m.id === this.selectedMemberId);
+    return member ? this.getMemberFullName(member) : '';
   }
 
   confirmDelete(book: Book): void {

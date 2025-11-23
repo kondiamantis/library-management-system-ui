@@ -1,1 +1,137 @@
-<p>borrowings works!</p>
+<div class="p-2">
+  <!-- Filter Section -->
+  <p-card class="mb-2">
+    <ng-template pTemplate="header">
+      <div class="px-3 pt-3">
+        <h2 class="text-2xl font-bold m-0 text-900">Borrowings Management</h2>
+        <!-- <p class="text-sm text-600 mt-1 mb-0">Track and manage book borrowings</p> -->
+      </div>
+    </ng-template>
+    
+    <div class="formgrid grid">
+      <!-- Status Filter -->
+      <div class="field col-12 md:col-6 lg:col-4">
+          <p-select 
+            inputId="statusFilter"
+            [(ngModel)]="statusFilter" 
+            [options]="statusOptions"
+            (onChange)="applyFilters()"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full">
+          </p-select>
+      </div>
+
+      <!-- Clear Filters Button -->
+      <div class="field col-12 md:col-6 lg:col-4 flex align-items-end">
+        <p-button 
+          label="Clear Filters" 
+          icon="pi pi-filter-slash" 
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="clearFilters()"
+          styleClass="w-full">
+        </p-button>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Borrowings Table -->
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center justify-content-between px-3 pt-3">
+        <div>
+          <h3 class="text-xl font-semibold m-0 text-900">Borrowings List</h3>
+          <p class="text-sm text-600 mt-1 mb-0">Total: {{ filteredBorrowings.length }} borrowings</p>
+        </div>
+        <p-button 
+          icon="pi pi-refresh" 
+          [rounded]="true"
+          [outlined]="true"
+          (onClick)="loadBorrowings()">
+        </p-button>
+      </div>
+    </ng-template>
+
+    <p-table 
+      [value]="filteredBorrowings" 
+      [loading]="loading"
+      [paginator]="true" 
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} borrowings"
+      styleClass="p-datatable-sm"
+      [tableStyle]="{ 'min-width': '75rem' }">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="book.title">Book Title</th>
+          <th pSortableColumn="member.firstName">Member</th>
+          <th pSortableColumn="borrowDate">Borrow Date</th>
+          <th pSortableColumn="dueDate">Due Date</th>
+          <th pSortableColumn="returnDate">Return Date</th>
+          <th pSortableColumn="status">Status</th>
+          <th pSortableColumn="lateFee">Late Fee</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-borrowing>
+        <tr>
+          <td>
+            <span class="font-semibold">{{ borrowing.book.title }}</span>
+            <br>
+            <small class="text-600">by {{ borrowing.book.author }}</small>
+          </td>
+          <td>
+            <span>{{ getMemberFullName(borrowing) }}</span>
+            <br>
+            <small class="text-600">{{ borrowing.member.email }}</small>
+          </td>
+          <td>{{ borrowing.borrowDate }}</td>
+          <td>{{ borrowing.dueDate }}</td>
+          <td>
+            <span *ngIf="borrowing.returnDate">{{ borrowing.returnDate }}</span>
+            <span *ngIf="!borrowing.returnDate" class="text-500">Not returned</span>
+          </td>
+          <td>
+            <p-tag 
+              [value]="borrowing.status" 
+              [severity]="getStatusSeverity(borrowing.status)">
+            </p-tag>
+          </td>
+          <td>
+            <span *ngIf="borrowing.lateFee > 0" class="font-bold text-red-500">
+              ${{ borrowing.lateFee.toFixed(2) }}
+            </span>
+            <span *ngIf="borrowing.lateFee === 0" class="text-500">
+              $0.00
+            </span>
+          </td>
+          <td>
+            <p-button 
+              *ngIf="canReturn(borrowing)"
+              label="Return"
+              icon="pi pi-check" 
+              severity="success"
+              size="small"
+              [outlined]="true"
+              (onClick)="returnBook(borrowing)">
+            </p-button>
+            <span *ngIf="!canReturn(borrowing)" class="text-500">-</span>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center py-5">
+            <i class="pi pi-inbox text-4xl text-400 mb-3"></i>
+            <p class="text-600">No borrowings found.</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

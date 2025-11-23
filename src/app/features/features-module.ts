@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DrawerModule } from 'primeng/drawer';
+import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
@@ -39,6 +40,7 @@ import { ConfirmationService } from 'primeng/api';
     FloatLabelModule,
     ConfirmDialogModule,
     DrawerModule,
+    DialogModule,
     InputNumberModule,
     SelectModule,
     TextareaModule,
