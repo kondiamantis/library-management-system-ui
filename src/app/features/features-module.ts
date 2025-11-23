@@ -10,6 +10,7 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DrawerModule } from 'primeng/drawer';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
@@ -18,6 +19,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,7 @@ import { TooltipModule } from 'primeng/tooltip';
     TableModule,
     InputTextModule,
     FloatLabelModule,
+    ConfirmDialogModule,
     DrawerModule,
     InputNumberModule,
     SelectModule,
@@ -49,6 +52,9 @@ import { TooltipModule } from 'primeng/tooltip';
     MembersComponent,
     DashboardComponent,
     BorrowingsComponent
+  ],
+  providers: [
+    ConfirmationService
   ]
 })
 export class FeaturesModule { }

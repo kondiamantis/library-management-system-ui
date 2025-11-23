@@ -3,6 +3,7 @@ import { BookService } from '../../core/services/book.service';
 import { Book } from '../../core/models/book.model';
 import { BookGenre } from '../../shared/enums/book-genre.enum';
 import { BookStatus } from '../../shared/enums/book-status.enum';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-books',
@@ -51,7 +52,10 @@ export class BooksComponent implements OnInit {
   // Edit form
   editedBook: Book = this.getEmptyBook();
 
-  constructor(private bookService: BookService) {}
+  constructor(
+    private bookService: BookService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
     this.loadBooks();
@@ -155,11 +159,18 @@ export class BooksComponent implements OnInit {
   }
 
   confirmDelete(book: Book): void {
-    const confirmed = confirm(`Are you sure you want to delete "${book.title}"?\n\nThis action cannot be undone.`);
-    
-    if (confirmed && book.id) {
-      this.deleteBook(book.id);
-    }
+    this.confirmationService.confirm({
+      message: `Are you sure you want to delete "${book.title}"?`,
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        if (book.id) {
+          this.deleteBook(book.id);
+        }
+      }
+    });
   }
 
   deleteBook(bookId: number): void {
