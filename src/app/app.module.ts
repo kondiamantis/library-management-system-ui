@@ -8,6 +8,8 @@ import { routes } from './app.routes';
 import { SharedModule } from './shared/shared-module';
 import { FeaturesModule } from './features/features-module';
 import { CoreModule } from './core/core-module';
+import { PrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 @NgModule({
   declarations: [
@@ -24,5 +26,15 @@ import { CoreModule } from './core/core-module';
   ],
   bootstrap: [App]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private primeng: PrimeNG) {
+    this.primeng.theme.set({
+      preset: Aura,
+      options: {
+        darkModeSelector: 'none'
+      }
+    });
+    this.primeng.ripple.set(true);
+  }
+}
 

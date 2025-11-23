@@ -1,181 +1,38 @@
-@use 'sass:color';
-
-$darkblue: #0f2f61;
-$light: #ffffff;
-$hover: rgba(255, 255, 255, 0.12);
-
+// Modern, minimal navbar styling using PrimeFlex and PrimeNG 20
 :host {
   display: block;
 }
 
-.navbar-container {
-  position: relative;
-  padding: 0.75rem 1.5rem;
-  // border-radius: 4px;
-  background: linear-gradient(135deg, color.scale($darkblue, $lightness: 10%), $darkblue);
-  box-shadow: 0 20px 35px rgba(15, 47, 97, 0.25);
-  overflow: hidden;
-}
-
-.navbar-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.18), transparent 55%),
-    radial-gradient(circle at 80% 80%, rgba(24, 49, 83, 0.25), transparent 55%);
-}
-
 :host ::ng-deep {
-  .p-menubar {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0;
-  }
-
+  // Menubar customization
   .p-menubar-root-list {
-    gap: 1rem;
+    gap: 0.25rem;
   }
 
-  .p-menubar-root-list > .p-menubar-item > .p-menubar-item-content {
-    position: relative;
-    color: $light;
-    font-weight: 600;
-    font-size: 0.95rem;
-    padding: 0.7rem 0.95rem;
-    border-radius: 999px;
-    border: none;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  }
-
-  .p-menubar-root-list > .p-menubar-item > .p-menubar-item-content .p-menubar-item-icon,
-  .p-menubar-submenu-icon {
-    color: inherit;
-    font-size: 1.05rem;
-    margin-right: 0.6rem;
-  }
-
-  .p-menubar-root-list > .p-menubar-item > .p-menubar-item-content:hover,
-  .p-menubar-root-list > .p-menubar-item.p-menubar-item-active > .p-menubar-item-content,
-  .p-menubar-root-list > .p-menubar-item.p-focus > .p-menubar-item-content {
-    background-color: $hover;
-    color: $light;
-    transform: translateY(-1px);
-  }
-
-  .p-menubar-submenu {
-    padding: 0.35rem;
-    border-radius: 12px;
-    background: $light;
-    box-shadow: 0 16px 35px rgba(24, 49, 83, 0.18);
-  }
-
-  .p-menubar-submenu .p-menubar-item-content {
-    color: $darkblue;
-    font-size: 0.9rem;
+  .p-menubar-item-content {
     border-radius: 8px;
-  }
-
-  .p-menubar-submenu .p-menubar-item-content .p-menuitem-icon {
-    color: $darkblue;
-  }
-
-  .p-menubar-start,
-  .p-menubar-end {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: $light;
-  }
-
-  .p-selectbutton .p-togglebutton {
-    border-radius: 50% !important;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: $light;
-    margin-left: 0.35rem;
-    font-weight: 600;
+    font-weight: 500;
     transition: all 0.2s ease;
   }
 
-  .p-selectbutton .p-togglebutton.p-togglebutton-checked {
-    background: $light !important;
-    border: none;
-    color: $darkblue;
+  .p-menubar-item-link {
+    padding: 0.75rem 1rem;
   }
 
-  .p-selectbutton .p-togglebutton .p-togglebutton-label {
-    font-size: 0.75rem;
-    padding: 0;
-    line-height: 1;
+  .p-menubar-item-icon {
+    font-size: 1.1rem;
   }
 
-  .p-button.p-button-outlined.p-button-contrast {
-    border-color: rgba(255, 255, 255, 0.65);
-    color: $light;
-  }
-}
-
-.toolbar-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-  padding: 0.4rem 1.25rem;
-  margin-bottom: 0.5rem;
-  // background: $darkblue;
-  color: $darkblue;
-  // border-radius: 12px;
-}
-
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.logo {
-  height: 70px;
-  width: 70px;
-  border-radius: 10px;
-  object-fit: cover;
-  filter: drop-shadow(0 8px 18px rgba(247, 245, 245, 0.28));
-}
-
-@media (max-width: 768px) {
-  .navbar-container {
-    padding: 0.6rem 1rem;
-    border-radius: 12px;
+  // Active/hover states
+  .p-menubar-item-active > .p-menubar-item-content,
+  .p-menubar-item-content:hover {
+    background: var(--primary-color);
+    color: var(--primary-contrast-color);
   }
 
-  .toolbar-container {
-    padding: 0.35rem 1rem;
-    border-radius: 10px;
-  }
-
-  .logo {
-    height: 32px;
-    width: 32px;
-  }
-}
-
-@media (max-width: 480px) {
-  .navbar-container {
-    padding: 0.5rem 0.75rem;
-    border-radius: 10px;
-  }
-
-  .logo {
-    height: 28px;
-    width: 28px;
+  .p-menubar-item-active .p-menubar-item-icon,
+  .p-menubar-item-content:hover .p-menubar-item-icon {
+    color: var(--primary-contrast-color);
   }
 }
 

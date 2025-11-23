@@ -1,9 +1,33 @@
-<p-toolbar class="toolbar-container">
-    <div class="toolbar-left">
-        <img src="assets/images/books.jpg" alt="Library Management System" class="logo">
-        <h1>Library Management System</h1>
+<div class="surface-card border-bottom-1 surface-border">
+  <!-- Top Bar with Logo and Title -->
+  <div class="flex align-items-center justify-content-between px-4 py-3 md:px-6 md:py-4">
+    <div class="flex align-items-center gap-3">
+      <i class="pi pi-book text-5xl text-primary"></i>
+      <div>
+        <h1 class="text-2xl font-bold m-0 text-900 line-height-3">Library System</h1>
+        <p class="text-sm text-600 m-0">Management Portal</p>
+      </div>
     </div>
-</p-toolbar>
-<div class="navbar-container">
-  <p-menubar [model]="items"></p-menubar>
+    
+    <div class="flex align-items-center gap-2">
+      <p-button 
+        icon="pi pi-bell" 
+        [text]="true" 
+        [rounded]="true"
+        severity="secondary"
+        class="hidden md:inline-flex">
+      </p-button>
+      <p-button 
+        icon="pi pi-user" 
+        [text]="true" 
+        [rounded]="true"
+        severity="secondary">
+      </p-button>
+    </div>
+  </div>
+  
+  <!-- Navigation Menu -->
+  <div class="px-3 md:px-5">
+    <p-menubar [model]="items" class="border-noround border-none bg-transparent p-0"></p-menubar>
+  </div>
 </div>
