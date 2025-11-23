@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BookService } from '../../core/services/book.service';
 import { Book } from '../../core/models/book.model';
+import { BookGenre } from '../../shared/enums/book-genre.enum';
 
 @Component({
   selector: 'app-books',
@@ -20,19 +21,13 @@ export class BooksComponent implements OnInit {
   searchYear: number | null = null;
   searchGenre: string = '';
   
-  // Genre options for dropdown
+  // Genre options for dropdown - generated from enum
   genreOptions = [
     { label: 'All Genres', value: '' },
-    { label: 'Fiction', value: 'Fiction' },
-    { label: 'Non-Fiction', value: 'Non-Fiction' },
-    { label: 'Science', value: 'Science' },
-    { label: 'Technology', value: 'Technology' },
-    { label: 'History', value: 'History' },
-    { label: 'Biography', value: 'Biography' },
-    { label: 'Fantasy', value: 'Fantasy' },
-    { label: 'Mystery', value: 'Mystery' },
-    { label: 'Romance', value: 'Romance' },
-    { label: 'Thriller', value: 'Thriller' },
+    ...Object.values(BookGenre).map(genre => ({
+      label: genre,
+      value: genre
+    }))
   ];
   
   get editGenreOptions() {
