@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BookService } from '../../core/services/book.service';
 import { Book } from '../../core/models/book.model';
 import { BookGenre } from '../../shared/enums/book-genre.enum';
+import { BookStatus } from '../../shared/enums/book-status.enum';
 
 @Component({
   selector: 'app-books',
@@ -17,7 +18,7 @@ export class BooksComponent implements OnInit {
   // Filters
   searchTitle: string = '';
   searchAuthor: string = '';
-  searchIsbn: string = '';
+  searchStatus: string = '';
   searchYear: number | null = null;
   searchGenre: string = '';
   
@@ -28,6 +29,14 @@ export class BooksComponent implements OnInit {
       label: genre,
       value: genre
     }))
+  ];
+  
+  // Status options for dropdown - generated from enum
+  statusOptions = [
+    { label: 'All Status', value: BookStatus.All },
+    { label: 'Available', value: BookStatus.Available },
+    { label: 'Low Stock', value: BookStatus.LowStock },
+    { label: 'Out of Stock', value: BookStatus.OutOfStock }
   ];
   
   get editGenreOptions() {
@@ -71,8 +80,7 @@ export class BooksComponent implements OnInit {
       const matchesAuthor = !this.searchAuthor || 
         book.author.toLowerCase().includes(this.searchAuthor.toLowerCase());
       
-      const matchesIsbn = !this.searchIsbn || 
-        book.isbn.toLowerCase().includes(this.searchIsbn.toLowerCase());
+      const matchesStatus = !this.searchStatus || this.matchesStatusFilter(book, this.searchStatus);
       
       const matchesYear = !this.searchYear || 
         book.publicationYear === this.searchYear;
@@ -80,14 +88,27 @@ export class BooksComponent implements OnInit {
       const matchesGenre = !this.searchGenre || 
         book.genre === this.searchGenre;
       
-      return matchesTitle && matchesAuthor && matchesIsbn && matchesYear && matchesGenre;
+      return matchesTitle && matchesAuthor && matchesStatus && matchesYear && matchesGenre;
     });
+  }
+
+  private matchesStatusFilter(book: Book, status: string): boolean {
+    switch (status) {
+      case BookStatus.Available:
+        return book.availableCopies > 2;
+      case BookStatus.LowStock:
+        return book.availableCopies > 0 && book.availableCopies <= 2;
+      case BookStatus.OutOfStock:
+        return book.availableCopies === 0;
+      default:
+        return true;
+    }
   }
 
   clearFilters(): void {
     this.searchTitle = '';
     this.searchAuthor = '';
-    this.searchIsbn = '';
+    this.searchStatus = '';
     this.searchYear = null;
     this.searchGenre = '';
     this.filteredBooks = this.books;

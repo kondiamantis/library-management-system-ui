@@ -35,19 +35,6 @@
         </p-floatlabel>
       </div>
 
-      <!-- ISBN Search -->
-      <div class="field col-12 md:col-6 lg:col-4">
-        <p-floatlabel>
-          <input 
-            pInputText 
-            id="searchIsbn" 
-            [(ngModel)]="searchIsbn" 
-            (input)="applyFilters()"
-            class="w-full" />
-          <label for="searchIsbn">ISBN</label>
-        </p-floatlabel>
-      </div>
-
       <!-- Publication Year -->
       <div class="field col-12 md:col-6 lg:col-4">
         <p-floatlabel>
@@ -60,6 +47,19 @@
           </p-inputnumber>
           <label for="searchYear">Publication Year</label>
         </p-floatlabel>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="field col-12 md:col-6 lg:col-4">
+        <p-select 
+          inputId="searchStatus"
+          [(ngModel)]="searchStatus" 
+          [options]="statusOptions"
+          (onChange)="applyFilters()"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full">
+        </p-select>
       </div>
 
       <!-- Genre Filter -->
