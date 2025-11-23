@@ -1,1 +1,344 @@
-<p>books works!</p>
+<div class="p-4">
+  <!-- Search and Filter Section -->
+  <p-card class="mb-4">
+    <ng-template pTemplate="header">
+      <div class="px-3 pt-3">
+        <h2 class="text-2xl font-bold m-0 text-900">Book Management</h2>
+        <p class="text-sm text-600 mt-1 mb-0">Search and filter books in the library</p>
+      </div>
+    </ng-template>
+    
+    <div class="formgrid grid">
+      <!-- Title Search -->
+      <div class="field col-12 md:col-6 lg:col-4">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="searchTitle" 
+            [(ngModel)]="searchTitle" 
+            (input)="applyFilters()"
+            class="w-full" />
+          <label for="searchTitle">Title</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Author Search -->
+      <div class="field col-12 md:col-6 lg:col-4">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="searchAuthor" 
+            [(ngModel)]="searchAuthor" 
+            (input)="applyFilters()"
+            class="w-full" />
+          <label for="searchAuthor">Author</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- ISBN Search -->
+      <div class="field col-12 md:col-6 lg:col-4">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="searchIsbn" 
+            [(ngModel)]="searchIsbn" 
+            (input)="applyFilters()"
+            class="w-full" />
+          <label for="searchIsbn">ISBN</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Publication Year -->
+      <div class="field col-12 md:col-6 lg:col-4">
+        <p-floatlabel>
+          <p-inputnumber 
+            inputId="searchYear" 
+            [(ngModel)]="searchYear" 
+            (onInput)="applyFilters()"
+            [useGrouping]="false"
+            styleClass="w-full">
+          </p-inputnumber>
+          <label for="searchYear">Publication Year</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Genre Filter -->
+      <div class="field col-12 md:col-6 lg:col-4">
+        
+          <p-select 
+            inputId="searchGenre"
+            [(ngModel)]="searchGenre" 
+            [options]="genreOptions"
+            (onChange)="applyFilters()"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full">
+          </p-select>
+      </div>
+
+      <!-- Clear Filters Button -->
+      <div class="field col-12 md:col-6 lg:col-4 flex align-items-end">
+        <p-button 
+          label="Clear Filters" 
+          icon="pi pi-filter-slash" 
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="clearFilters()"
+          styleClass="w-full">
+        </p-button>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Books Table -->
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="flex align-items-center justify-content-between px-3 pt-3">
+        <div>
+          <h3 class="text-xl font-semibold m-0 text-900">Books List</h3>
+          <p class="text-sm text-600 mt-1 mb-0">Total: {{ filteredBooks.length }} books</p>
+        </div>
+        <p-button 
+          icon="pi pi-refresh" 
+          [rounded]="true"
+          [outlined]="true"
+          (onClick)="loadBooks()">
+        </p-button>
+      </div>
+    </ng-template>
+
+    <p-table 
+      [value]="filteredBooks" 
+      [loading]="loading"
+      [paginator]="true" 
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} books"
+      styleClass="p-datatable-sm"
+      [tableStyle]="{ 'min-width': '75rem' }">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="title">Title</th>
+          <th pSortableColumn="author">Author</th>
+          <th pSortableColumn="genre">Genre</th>
+          <th pSortableColumn="publicationYear">Year</th>
+          <th pSortableColumn="availableCopies">Available</th>
+          <th pSortableColumn="totalCopies">Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-book>
+        <tr>
+          <td>
+            <span class="font-semibold">{{ book.title }}</span>
+            <br>
+            <small class="text-600">ISBN: {{ book.isbn }}</small>
+          </td>
+          <td>{{ book.author }}</td>
+          <td>
+            <p-tag [value]="book.genre" severity="secondary"></p-tag>
+          </td>
+          <td>{{ book.publicationYear }}</td>
+          <td>
+            <span class="font-bold">{{ book.availableCopies }}</span>
+          </td>
+          <td>{{ book.totalCopies }}</td>
+          <td>
+            <p-tag 
+              [value]="getAvailabilityLabel(book)" 
+              [severity]="getAvailabilityStatus(book)">
+            </p-tag>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <p-button 
+                icon="pi pi-pencil" 
+                [rounded]="true"
+                [outlined]="true"
+                severity="info"
+                size="small"
+                (onClick)="openEditSidebar(book)"
+                pTooltip="Edit Book"
+                tooltipPosition="top">
+              </p-button>
+              <p-button 
+                icon="pi pi-book" 
+                [rounded]="true"
+                [outlined]="true"
+                severity="success"
+                size="small"
+                [disabled]="book.availableCopies === 0"
+                (onClick)="borrowBook(book)"
+                pTooltip="Borrow Book"
+                tooltipPosition="top">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="text-center py-5">
+            <i class="pi pi-book text-4xl text-400 mb-3"></i>
+            <p class="text-600">No books found. Try adjusting your filters.</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Edit Drawer -->
+<p-drawer 
+  [(visible)]="sidebarVisible" 
+  position="right" 
+  [style]="{ width: '30rem' }"
+  (onHide)="closeSidebar()">
+  
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-pencil text-xl"></i>
+      <span class="font-bold text-xl">Edit Book</span>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-column gap-4 pt-3">
+    <!-- Title -->
+    <div class="field">
+      <p-floatlabel>
+        <input 
+          pInputText 
+          id="editTitle" 
+          [(ngModel)]="editedBook.title"
+          class="w-full" />
+        <label for="editTitle">Title *</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Author -->
+    <div class="field">
+      <p-floatlabel>
+        <input 
+          pInputText 
+          id="editAuthor" 
+          [(ngModel)]="editedBook.author"
+          class="w-full" />
+        <label for="editAuthor">Author *</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- ISBN -->
+    <div class="field">
+      <p-floatlabel>
+        <input 
+          pInputText 
+          id="editIsbn" 
+          [(ngModel)]="editedBook.isbn"
+          class="w-full" />
+        <label for="editIsbn">ISBN *</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Genre -->
+    <div class="field">
+      <p-floatlabel>
+        <p-select 
+          inputId="editGenre"
+          [(ngModel)]="editedBook.genre" 
+          [options]="editGenreOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full">
+        </p-select>
+        <label for="editGenre">Genre *</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Publication Year -->
+    <div class="field">
+      <p-floatlabel>
+        <p-inputnumber 
+          inputId="editYear" 
+          [(ngModel)]="editedBook.publicationYear"
+          [useGrouping]="false"
+          styleClass="w-full">
+        </p-inputnumber>
+        <label for="editYear">Publication Year</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Total Copies -->
+    <div class="field">
+      <p-floatlabel>
+        <p-inputnumber 
+          inputId="editTotalCopies" 
+          [(ngModel)]="editedBook.totalCopies"
+          [min]="0"
+          styleClass="w-full">
+        </p-inputnumber>
+        <label for="editTotalCopies">Total Copies *</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Available Copies -->
+    <div class="field">
+      <p-floatlabel>
+        <p-inputnumber 
+          inputId="editAvailableCopies" 
+          [(ngModel)]="editedBook.availableCopies"
+          [min]="0"
+          [max]="editedBook.totalCopies"
+          styleClass="w-full">
+        </p-inputnumber>
+        <label for="editAvailableCopies">Available Copies *</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Description -->
+    <div class="field">
+      <p-floatlabel>
+        <textarea 
+          pTextarea
+          id="editDescription" 
+          [(ngModel)]="editedBook.description"
+          rows="4"
+          class="w-full">
+        </textarea>
+        <label for="editDescription">Description</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Cover URL -->
+    <div class="field">
+      <p-floatlabel>
+        <input 
+          pInputText 
+          id="editCoverUrl" 
+          [(ngModel)]="editedBook.coverUrl"
+          class="w-full" />
+        <label for="editCoverUrl">Cover URL</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-content-end">
+      <p-button 
+        label="Cancel" 
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="closeSidebar()">
+      </p-button>
+      <p-button 
+        label="Save Changes" 
+        icon="pi pi-check"
+        (onClick)="saveBook()">
+      </p-button>
+    </div>
+  </ng-template>
+</p-drawer>

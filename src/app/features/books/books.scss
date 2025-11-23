@@ -1,0 +1,25 @@
+// Books component styling
+:host {
+  display: block;
+  
+  ::ng-deep {
+    .p-card-body {
+      padding: 1.25rem;
+    }
+
+    // Add spacing between filter fields
+    .formgrid .field {
+      margin-bottom: 1.5rem;
+    }
+
+    .p-datatable .p-datatable-thead > tr > th {
+      background-color: var(--surface-50);
+      font-weight: 600;
+    }
+
+    .p-drawer .p-drawer-content {
+      padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+  }
+}
+
