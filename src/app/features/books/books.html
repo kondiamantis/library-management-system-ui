@@ -30,7 +30,8 @@
             filterBy="firstName,lastName,email"
             placeholder="Select a member"
             styleClass="w-full"
-            [showClear]="true">
+            [showClear]="true"
+            appendTo="body">
             <ng-template pTemplate="selectedItem">
               <div *ngIf="selectedMemberId">
                 {{ getSelectedMemberName() }}

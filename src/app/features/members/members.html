@@ -406,10 +406,10 @@
   [header]="isEditMode ? 'Edit Member' : 'Edit Profile'"
   (onHide)="closeEditDialog()">
   
-  <div *ngIf="editingMember" class="p-3">
+  <div *ngIf="editingMember" class="p-3 pt-4">
     <div class="grid">
       <!-- First Name -->
-      <div class="col-12 md:col-6">
+      <div class="col-12 md:col-6 mb-3">
         <p-floatlabel>
           <input 
             pInputText 
@@ -421,7 +421,7 @@
       </div>
 
       <!-- Last Name -->
-      <div class="col-12 md:col-6">
+      <div class="col-12 md:col-6 mb-3">
         <p-floatlabel>
           <input 
             pInputText 
@@ -433,7 +433,7 @@
       </div>
 
       <!-- Email (Read-only) -->
-      <div class="col-12">
+      <div class="col-12 mb-3">
         <p-floatlabel>
           <input 
             pInputText 
@@ -446,7 +446,7 @@
       </div>
 
       <!-- Phone Number -->
-      <div class="col-12">
+      <div class="col-12 mb-3">
         <p-floatlabel>
           <input 
             pInputText 
@@ -458,7 +458,7 @@
       </div>
 
       <!-- Address -->
-      <div class="col-12">
+      <div class="col-12 mb-3">
         <p-floatlabel>
           <textarea 
             pInputTextarea 
