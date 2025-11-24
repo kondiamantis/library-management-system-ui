@@ -20,6 +20,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { ScrollTopModule } from 'primeng/scrolltop';
 import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
@@ -48,6 +49,7 @@ import { ConfirmationService } from 'primeng/api';
     InputIconModule,
     TagModule,
     TooltipModule,
+    ScrollTopModule,
   ],
   exports: [
     BooksComponent,

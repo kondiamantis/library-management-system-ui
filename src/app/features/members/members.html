@@ -1,1 +1,494 @@
-<p>members works!</p>
+<!-- ADMIN VIEW -->
+<div *ngIf="isAdmin" class="members-container">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="flex justify-content-between align-items-center p-3">
+        <h2 class="m-0">Members Management</h2>
+      </div>
+    </ng-template>
+
+    <!-- Filters Section -->
+    <div class="filter-section mb-4">
+      <div class="grid align-items-center">
+        <div class="col-12 md:col-5">
+          <span class="p-input-icon-left w-full">
+            <!-- <i class="pi pi-search"></i> -->
+            <input 
+              pInputText 
+              type="text" 
+              [(ngModel)]="searchQuery"
+              (input)="applyFilters()"
+              placeholder="Search by name or email" 
+              class="w-full" />
+          </span>
+        </div>
+        <div class="col-12 md:col-4">
+          <p-select 
+            [(ngModel)]="statusFilter"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            (onChange)="applyFilters()"
+            placeholder="All Status"
+            [showClear]="true"
+            styleClass="w-full">
+          </p-select>
+        </div>
+        <div class="col-12 md:col-3">
+          <p-button 
+            label="Clear Filters" 
+            icon="pi pi-filter-slash"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="clearFilters()"
+            styleClass="w-full">
+          </p-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Members Table -->
+    <p-table 
+      [value]="filteredMembers" 
+      [loading]="loading"
+      [paginator]="true" 
+      [rows]="10"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} members"
+      styleClass="p-datatable-striped">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="firstName">Name <p-sortIcon field="firstName"></p-sortIcon></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="phoneNumber">Phone</th>
+          <th pSortableColumn="membershipDate">Member Since <p-sortIcon field="membershipDate"></p-sortIcon></th>
+          <th>Membership Status</th>
+          <th pSortableColumn="isActive">Active <p-sortIcon field="isActive"></p-sortIcon></th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-member>
+        <tr>
+          <td>{{ getMemberFullName(member) }}</td>
+          <td>{{ member.email }}</td>
+          <td>{{ member.phoneNumber }}</td>
+          <td>{{ member.membershipDate | date:'mediumDate' }}</td>
+          <td>
+            <p-tag 
+              [value]="getMembershipStatusLabel(member)"
+              [severity]="getMembershipStatusSeverity(member)">
+            </p-tag>
+          </td>
+          <td>
+            <p-tag 
+              [value]="member.isActive ? 'Active' : 'Inactive'"
+              [severity]="member.isActive ? 'success' : 'danger'">
+            </p-tag>
+          </td>
+          <td class="text-center">
+            <div class="flex gap-2 justify-content-center">
+              <p-button 
+                icon="pi pi-eye" 
+                [text]="true"
+                [rounded]="true"
+                severity="info"
+                (onClick)="viewMemberDetails(member)"
+                pTooltip="View Details"
+                tooltipPosition="top">
+              </p-button>
+              <p-button 
+                icon="pi pi-pencil" 
+                [text]="true"
+                [rounded]="true"
+                severity="warn"
+                (onClick)="openEditDialog(member)"
+                pTooltip="Edit Member"
+                tooltipPosition="top">
+              </p-button>
+              <p-button 
+                [icon]="member.isActive ? 'pi pi-lock' : 'pi pi-lock-open'" 
+                [text]="true"
+                [rounded]="true"
+                [severity]="member.isActive ? 'danger' : 'success'"
+                (onClick)="toggleMemberStatus(member, $event)"
+                [pTooltip]="member.isActive ? 'Deactivate' : 'Activate'"
+                tooltipPosition="top">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">
+            <div class="p-4">
+              <i class="pi pi-users text-4xl text-400 mb-3"></i>
+              <p class="text-600">No members found</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- MEMBER VIEW (Profile) -->
+<div *ngIf="isMember" class="profile-container">
+  <p-card *ngIf="currentMemberProfile">
+    <ng-template pTemplate="header">
+      <div class="flex justify-content-between align-items-center p-3">
+        <h2 class="m-0">My Profile</h2>
+        <p-button 
+          label="Edit Profile" 
+          icon="pi pi-pencil"
+          [outlined]="true"
+          (onClick)="openEditProfile()">
+        </p-button>
+      </div>
+    </ng-template>
+
+    <div class="grid">
+      <!-- Personal Information -->
+      <div class="col-12 md:col-6">
+        <div class="profile-section">
+          <h3 class="text-primary mb-3">
+            <i class="pi pi-user mr-2"></i>Personal Information
+          </h3>
+          <div class="profile-info">
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Full Name</label>
+              <p class="text-900 font-semibold m-0">{{ getMemberFullName(currentMemberProfile) }}</p>
+            </div>
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Email</label>
+              <p class="text-900 m-0">{{ currentMemberProfile.email }}</p>
+            </div>
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Phone Number</label>
+              <p class="text-900 m-0">{{ currentMemberProfile.phoneNumber }}</p>
+            </div>
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Address</label>
+              <p class="text-900 m-0">{{ currentMemberProfile.address || 'Not provided' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Membership Details -->
+      <div class="col-12 md:col-6">
+        <div class="profile-section">
+          <h3 class="text-primary mb-3">
+            <i class="pi pi-id-card mr-2"></i>Membership Details
+          </h3>
+          <div class="profile-info">
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Member Since</label>
+              <p class="text-900 m-0">{{ currentMemberProfile.membershipDate | date:'mediumDate' }}</p>
+            </div>
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Membership Expires</label>
+              <p class="text-900 m-0">{{ currentMemberProfile.membershipExpiryDate | date:'mediumDate' }}</p>
+            </div>
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Status</label>
+              <p class="m-0">
+                <p-tag 
+                  [value]="currentMemberProfile.isActive ? 'Active' : 'Inactive'"
+                  [severity]="currentMemberProfile.isActive ? 'success' : 'danger'">
+                </p-tag>
+              </p>
+            </div>
+            <div class="info-item mb-3">
+              <label class="text-600 text-sm">Membership Status</label>
+              <p class="m-0">
+                <p-tag 
+                  [value]="getMembershipStatusLabel(currentMemberProfile)"
+                  [severity]="getMembershipStatusSeverity(currentMemberProfile)">
+                </p-tag>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Borrowing Statistics -->
+      <div class="col-12" *ngIf="memberStats">
+        <div class="profile-section">
+          <h3 class="text-primary mb-3">
+            <i class="pi pi-chart-bar mr-2"></i>Borrowing Statistics
+          </h3>
+          <div class="grid">
+            <div class="col-12 md:col-3">
+              <div class="stat-card bg-blue-50 border-round p-3">
+                <div class="flex align-items-center">
+                  <i class="pi pi-book text-blue-500 text-3xl mr-3"></i>
+                  <div>
+                    <p class="text-600 text-sm m-0">Total Borrowed</p>
+                    <p class="text-900 text-2xl font-bold m-0">{{ memberStats.totalBooksBorrowed }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 md:col-3">
+              <div class="stat-card bg-orange-50 border-round p-3">
+                <div class="flex align-items-center">
+                  <i class="pi pi-bookmark text-orange-500 text-3xl mr-3"></i>
+                  <div>
+                    <p class="text-600 text-sm m-0">Currently Borrowed</p>
+                    <p class="text-900 text-2xl font-bold m-0">{{ memberStats.currentlyBorrowed }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 md:col-3">
+              <div class="stat-card bg-green-50 border-round p-3">
+                <div class="flex align-items-center">
+                  <i class="pi pi-check-circle text-green-500 text-3xl mr-3"></i>
+                  <div>
+                    <p class="text-600 text-sm m-0">Books Returned</p>
+                    <p class="text-900 text-2xl font-bold m-0">{{ memberStats.booksReturned }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 md:col-3">
+              <div class="stat-card bg-red-50 border-round p-3">
+                <div class="flex align-items-center">
+                  <i class="pi pi-exclamation-triangle text-red-500 text-3xl mr-3"></i>
+                  <div>
+                    <p class="text-600 text-sm m-0">Overdue Books</p>
+                    <p class="text-900 text-2xl font-bold m-0">{{ memberStats.overdueBooks }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-content-center align-items-center" style="min-height: 400px;">
+    <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+  </div>
+</div>
+
+<!-- Member Details Drawer (Admin) -->
+<p-drawer 
+  [(visible)]="detailsDrawerVisible" 
+  [position]="'right'"
+  [style]="{ width: '600px' }"
+  [modal]="true">
+  
+  <ng-template pTemplate="header">
+    <h3 class="m-0">Member Details</h3>
+  </ng-template>
+
+  <div *ngIf="selectedMember" class="p-3">
+    <!-- Personal Info -->
+    <div class="mb-4">
+      <h4 class="text-primary mb-3">
+        <i class="pi pi-user mr-2"></i>Personal Information
+      </h4>
+      <div class="info-item mb-3">
+        <label class="text-600 text-sm">Full Name</label>
+        <p class="text-900 font-semibold m-0">{{ getMemberFullName(selectedMember) }}</p>
+      </div>
+      <div class="info-item mb-3">
+        <label class="text-600 text-sm">Email</label>
+        <p class="text-900 m-0">{{ selectedMember.email }}</p>
+      </div>
+      <div class="info-item mb-3">
+        <label class="text-600 text-sm">Phone</label>
+        <p class="text-900 m-0">{{ selectedMember.phoneNumber }}</p>
+      </div>
+      <div class="info-item mb-3">
+        <label class="text-600 text-sm">Address</label>
+        <p class="text-900 m-0">{{ selectedMember.address || 'Not provided' }}</p>
+      </div>
+    </div>
+
+    <!-- Membership Info -->
+    <div class="mb-4">
+      <h4 class="text-primary mb-3">
+        <i class="pi pi-id-card mr-2"></i>Membership Information
+      </h4>
+      <div class="info-item mb-3">
+        <label class="text-600 text-sm">Member Since</label>
+        <p class="text-900 m-0">{{ selectedMember.membershipDate | date:'mediumDate' }}</p>
+      </div>
+      <div class="info-item mb-3">
+        <label class="text-600 text-sm">Expires</label>
+        <p class="text-900 m-0">{{ selectedMember.membershipExpiryDate | date:'mediumDate' }}</p>
+      </div>
+      <div class="info-item mb-3">
+        <label class="text-600 text-sm">Status</label>
+        <p class="m-0">
+          <p-tag 
+            [value]="selectedMember.isActive ? 'Active' : 'Inactive'"
+            [severity]="selectedMember.isActive ? 'success' : 'danger'">
+          </p-tag>
+        </p>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="mb-4" *ngIf="memberStats">
+      <h4 class="text-primary mb-3">
+        <i class="pi pi-chart-bar mr-2"></i>Borrowing Statistics
+      </h4>
+      <div class="grid">
+        <div class="col-6">
+          <div class="stat-box text-center p-3 border-round bg-blue-50">
+            <p class="text-600 text-sm m-0">Total Borrowed</p>
+            <p class="text-900 text-2xl font-bold m-0">{{ memberStats.totalBooksBorrowed }}</p>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="stat-box text-center p-3 border-round bg-orange-50">
+            <p class="text-600 text-sm m-0">Currently Borrowed</p>
+            <p class="text-900 text-2xl font-bold m-0">{{ memberStats.currentlyBorrowed }}</p>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="stat-box text-center p-3 border-round bg-green-50">
+            <p class="text-600 text-sm m-0">Returned</p>
+            <p class="text-900 text-2xl font-bold m-0">{{ memberStats.booksReturned }}</p>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="stat-box text-center p-3 border-round bg-red-50">
+            <p class="text-600 text-sm m-0">Overdue</p>
+            <p class="text-900 text-2xl font-bold m-0">{{ memberStats.overdueBooks }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Borrowings -->
+    <div class="mb-4" *ngIf="memberBorrowings.length > 0">
+      <h4 class="text-primary mb-3">
+        <i class="pi pi-history mr-2"></i>Recent Borrowings
+      </h4>
+      <div class="borrowing-list">
+        <div *ngFor="let borrowing of memberBorrowings.slice(0, 5)" 
+             class="borrowing-item p-3 mb-2 border-round surface-100">
+          <div class="flex justify-content-between align-items-center">
+            <div>
+              <p class="font-semibold text-900 m-0 mb-1">{{ borrowing.book.title }}</p>
+              <p class="text-sm text-600 m-0">
+                Borrowed: {{ borrowing.borrowDate | date:'shortDate' }} | 
+                Due: {{ borrowing.dueDate | date:'shortDate' }}
+              </p>
+            </div>
+            <p-tag 
+              [value]="borrowing.status"
+              [severity]="borrowing.status === 'BORROWED' ? 'info' : borrowing.status === 'OVERDUE' ? 'danger' : 'success'">
+            </p-tag>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-drawer>
+
+<!-- Edit Dialog (Both Admin and Member) -->
+<p-dialog 
+  [(visible)]="editDialogVisible"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  [header]="isEditMode ? 'Edit Member' : 'Edit Profile'"
+  (onHide)="closeEditDialog()">
+  
+  <div *ngIf="editingMember" class="p-3">
+    <div class="grid">
+      <!-- First Name -->
+      <div class="col-12 md:col-6">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="firstName"
+            [(ngModel)]="editingMember.firstName"
+            class="w-full" />
+          <label for="firstName">First Name *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Last Name -->
+      <div class="col-12 md:col-6">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="lastName"
+            [(ngModel)]="editingMember.lastName"
+            class="w-full" />
+          <label for="lastName">Last Name *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Email (Read-only) -->
+      <div class="col-12">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="email"
+            [(ngModel)]="editingMember.email"
+            [readonly]="true"
+            class="w-full" />
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="col-12">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="phoneNumber"
+            [(ngModel)]="editingMember.phoneNumber"
+            class="w-full" />
+          <label for="phoneNumber">Phone Number *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Address -->
+      <div class="col-12">
+        <p-floatlabel>
+          <textarea 
+            pInputTextarea 
+            id="address"
+            [(ngModel)]="editingMember.address"
+            rows="3"
+            class="w-full">
+          </textarea>
+          <label for="address">Address</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-content-end">
+      <p-button 
+        label="Cancel" 
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="closeEditDialog()">
+      </p-button>
+      <p-button 
+        label="Save" 
+        icon="pi pi-check"
+        (onClick)="isEditMode ? saveMember() : saveProfile()">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-scrollTop></p-scrollTop> 

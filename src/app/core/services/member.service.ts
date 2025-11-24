@@ -38,4 +38,23 @@ export class MemberService {
   getMembersByStatus(status: string): Observable<Member[]> {
     return this.http.get<Member[]>(`${this.apiUrl}/status/${status}`);
   }
+
+  getMemberByUserId(userId: number): Observable<Member> {
+    return this.http.get<Member>(`${this.apiUrl}/user/${userId}`);
+  }
+
+  getMemberStats(memberId: number): Observable<MemberStats> {
+    return this.http.get<MemberStats>(`${this.apiUrl}/${memberId}/stats`);
+  }
+
+  toggleMemberStatus(id: number): Observable<Member> {
+    return this.http.put<Member>(`${this.apiUrl}/${id}/toggle-status`, {});
+  }
+}
+
+export interface MemberStats {
+  totalBooksBorrowed: number;
+  currentlyBorrowed: number;
+  booksReturned: number;
+  overdueBooks: number;
 }
