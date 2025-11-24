@@ -1,0 +1,97 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <div class="signup-header">
+      <i class="pi pi-book text-6xl text-primary mb-3"></i>
+      <h2 class="text-3xl font-bold text-900 m-0 mb-2">Create Account</h2>
+      <p class="text-600 m-0">Join our library system</p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-6">
+          <p-floatlabel>
+            <input 
+              pInputText 
+              id="firstName" 
+              formControlName="firstName" 
+              class="w-full"
+              autocomplete="given-name"
+            />
+            <label for="firstName">First Name</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <p-floatlabel>
+            <input 
+              pInputText 
+              id="lastName" 
+              formControlName="lastName" 
+              class="w-full"
+              autocomplete="family-name"
+            />
+            <label for="lastName">Last Name</label>
+          </p-floatlabel>
+        </div>
+      </div>
+
+      <div class="field">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="email" 
+            formControlName="email" 
+            class="w-full"
+            autocomplete="email"
+          />
+          <label for="email">Email</label>
+        </p-floatlabel>
+        <small class="p-error" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+          Please enter a valid email
+        </small>
+      </div>
+
+      <div class="field">
+        <p-floatlabel>
+          <p-password 
+            id="password" 
+            formControlName="password" 
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            autocomplete="new-password"
+          />
+          <label for="password">Password</label>
+        </p-floatlabel>
+        <small class="p-error" *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
+          Password must be at least 6 characters
+        </small>
+      </div>
+
+      <div class="field" *ngIf="errorMessage">
+        <small class="p-error block text-center">{{ errorMessage }}</small>
+      </div>
+
+      <div class="field" *ngIf="successMessage">
+        <small class="p-success block text-center text-green-600">{{ successMessage }}</small>
+      </div>
+
+      <p-button 
+        label="Sign Up" 
+        type="submit"
+        [loading]="loading"
+        [disabled]="signupForm.invalid"
+        styleClass="w-full"
+        severity="primary">
+      </p-button>
+
+      <div class="text-center mt-4">
+        <p class="text-600 m-0">
+          Already have an account? 
+          <a routerLink="/login" class="text-primary font-semibold cursor-pointer no-underline hover:underline">Sign in</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+

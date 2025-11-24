@@ -33,6 +33,10 @@ export class BorrowingService {
     return this.http.get<Borrowing[]>(`${this.apiUrl}/member/${memberId}`);
   }
 
+  getBorrowingsByUser(userId: number): Observable<Borrowing[]> {
+    return this.http.get<Borrowing[]>(`${this.apiUrl}/user/${userId}`);
+  }
+
   getOverdueBorrowings(): Observable<Borrowing[]> {
     return this.http.get<Borrowing[]>(`${this.apiUrl}/overdue`);
   }

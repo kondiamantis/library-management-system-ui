@@ -6,20 +6,20 @@
   <p-dialog 
     [(visible)]="borrowDialogVisible"
     [modal]="true"
-    [style]="{ width: '450px' }"
-    [header]="'Borrow Book'"
+    [style]="{ width: '400px' }"
+    [header]="'Confirm Borrowing'"
     (onHide)="closeBorrowDialog()">
     
-    <div class="flex flex-column gap-4">
-      <!-- Book Info -->
-      <div class="p-3 surface-100 border-round">
-        <p class="text-sm text-600 m-0 mb-1">Book to borrow:</p>
-        <p class="text-lg font-bold text-900 m-0">{{ selectedBookToBorrow?.title }}</p>
+    <div class="flex flex-column gap-3 py-3">
+      <!-- Book Title -->
+      <div class="text-center">
+        <i class="pi pi-book text-5xl text-primary mb-3"></i>
+        <h3 class="text-xl font-bold text-900 m-0 mb-2">{{ selectedBookToBorrow?.title }}</h3>
         <p class="text-sm text-600 m-0">by {{ selectedBookToBorrow?.author }}</p>
       </div>
 
-      <!-- Member Selection -->
-      <div class="field">
+      <!-- Member Selection (Only for Admins) -->
+      <div class="field mb-0" *ngIf="isAdmin">
         <p-floatlabel>
           <p-select 
             inputId="selectMember"
@@ -47,20 +47,11 @@
         </p-floatlabel>
       </div>
 
-      <!-- Borrowing Days -->
-      <div class="field">
-        <p-floatlabel>
-          <p-inputnumber 
-            inputId="borrowDays"
-            [(ngModel)]="borrowingDays"
-            [min]="1"
-            [max]="90"
-            [showButtons]="true"
-            styleClass="w-full">
-          </p-inputnumber>
-          <label for="borrowDays">Borrowing Days</label>
-        </p-floatlabel>
-        <small class="text-600">Default: 14 days. Maximum: 90 days.</small>
+      <!-- Return Date Info -->
+      <div class="p-3 surface-100 border-round text-center">
+        <p class="text-sm text-600 m-0 mb-1">Return by:</p>
+        <p class="text-2xl font-bold text-primary m-0">{{ getReturnDate() | date:'MMM dd, yyyy' }}</p>
+        <small class="text-600">({{ borrowingDays }} days from today)</small>
       </div>
     </div>
 
@@ -73,7 +64,7 @@
           (onClick)="closeBorrowDialog()">
         </p-button>
         <p-button 
-          label="Confirm Borrowing" 
+          label="Borrow Book" 
           icon="pi pi-check"
           severity="success"
           [disabled]="!selectedMemberId"
@@ -182,7 +173,7 @@
           <h3 class="text-xl font-semibold m-0 text-900">Books List</h3>
           <p class="text-sm text-600 mt-1 mb-0">Total: {{ filteredBooks.length }} books</p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2" *ngIf="canCreateBook">
           <p-button 
             label="Add New Book"
             icon="pi pi-plus" 
@@ -257,6 +248,7 @@
           <td>
             <div class="flex gap-2">
               <p-button 
+                *ngIf="canEditBook"
                 icon="pi pi-pencil" 
                 [rounded]="true"
                 [outlined]="true"
@@ -278,6 +270,7 @@
                 tooltipPosition="top">
               </p-button>
               <p-button 
+                *ngIf="canDeleteBook"
                 icon="pi pi-trash" 
                 [rounded]="true"
                 [outlined]="true"

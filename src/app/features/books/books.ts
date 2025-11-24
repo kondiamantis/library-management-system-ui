@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BookService } from '../../core/services/book.service';
 import { BorrowingService } from '../../core/services/borrowing.service';
 import { MemberService } from '../../core/services/member.service';
+import { AuthService } from '../../auth/services/auth.service';
 import { Book } from '../../core/models/book.model';
 import { Member } from '../../core/models/member.model';
 import { BorrowingRequest } from '../../core/models/borrowing-request.model';
@@ -67,6 +68,7 @@ export class BooksComponent implements OnInit {
     private bookService: BookService,
     private borrowingService: BorrowingService,
     private memberService: MemberService,
+    public authService: AuthService,
     private confirmationService: ConfirmationService
   ) {}
 
@@ -190,9 +192,17 @@ export class BooksComponent implements OnInit {
 
   borrowBook(book: Book): void {
     this.selectedBookToBorrow = book;
-    this.selectedMemberId = null;
     this.borrowingDays = 14;
-    this.loadMembers();
+    
+    // For members, auto-select themselves
+    if (this.isMember) {
+      this.selectedMemberId = this.authService.currentUserValue?.id || null;
+    } else {
+      // For admins, show member selection
+      this.selectedMemberId = null;
+      this.loadMembers();
+    }
+    
     this.borrowDialogVisible = true;
   }
 
@@ -210,27 +220,37 @@ export class BooksComponent implements OnInit {
   }
 
   confirmBorrowing(): void {
-    if (!this.selectedMemberId || !this.selectedBookToBorrow?.id) {
-      alert('Please select a member');
+    if (!this.selectedBookToBorrow?.id) {
+      alert('Invalid book selected');
       return;
     }
-
+  
     const request: BorrowingRequest = {
       bookId: this.selectedBookToBorrow.id,
-      memberId: this.selectedMemberId,
       borrowingDays: this.borrowingDays
     };
-
+  
+    // For members, send their user ID
+    if (this.isMember) {
+      request.userId = this.authService.currentUserValue?.id;
+    } else {
+      // For admins, send the selected member ID
+      if (!this.selectedMemberId) {
+        alert('Please select a member');
+        return;
+      }
+      request.memberId = this.selectedMemberId;
+    }
+  
     this.borrowingService.borrowBook(request).subscribe({
       next: () => {
-        // Reload books to update available copies
         this.loadBooks();
         this.borrowDialogVisible = false;
         alert(`Book "${this.selectedBookToBorrow?.title}" borrowed successfully!`);
       },
       error: (error) => {
         console.error('Error borrowing book:', error);
-        const errorMessage = error.error?.message || 'Failed to borrow book. Please try again.';
+        const errorMessage = error.error?.message || error.error || 'Failed to borrow book. Please try again.';
         alert(errorMessage);
       }
     });
@@ -241,6 +261,13 @@ export class BooksComponent implements OnInit {
     this.selectedBookToBorrow = null;
     this.selectedMemberId = null;
     this.borrowingDays = 14;
+  }
+
+  getReturnDate(): Date {
+    const today = new Date();
+    const returnDate = new Date(today);
+    returnDate.setDate(today.getDate() + this.borrowingDays);
+    return returnDate;
   }
 
   getMemberFullName(member: Member): string {
@@ -310,5 +337,30 @@ export class BooksComponent implements OnInit {
       totalCopies: 0,
       availableCopies: 0
     };
+  }
+
+  // Role-based permissions
+  get isAdmin(): boolean {
+    return this.authService.isAdmin;
+  }
+
+  get isMember(): boolean {
+    return this.authService.isMember;
+  }
+
+  get canCreateBook(): boolean {
+    return this.isAdmin;
+  }
+
+  get canEditBook(): boolean {
+    return this.isAdmin;
+  }
+
+  get canDeleteBook(): boolean {
+    return this.isAdmin;
+  }
+
+  get canBorrowBook(): boolean {
+    return true; // Both admin and member can borrow
   }
 }

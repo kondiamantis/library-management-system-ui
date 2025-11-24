@@ -1,0 +1,66 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <i class="pi pi-book text-6xl text-primary mb-3"></i>
+      <h2 class="text-3xl font-bold text-900 m-0 mb-2">Library System</h2>
+      <p class="text-600 m-0">Sign in to your account</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="field">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="email" 
+            formControlName="email" 
+            class="w-full" 
+            autocomplete="email"
+          />
+          <label for="email">Email</label>
+        </p-floatlabel>
+        <small class="p-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          Please enter a valid email
+        </small>
+      </div>
+
+      <div class="field">
+        <p-floatlabel>
+          <p-password 
+            id="password" 
+            formControlName="password" 
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            autocomplete="current-password"
+          />
+          <label for="password">Password</label>
+        </p-floatlabel>
+        <small class="p-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Password is required
+        </small>
+      </div>
+
+      <div class="field" *ngIf="errorMessage">
+        <small class="p-error block text-center">{{ errorMessage }}</small>
+      </div>
+
+      <p-button 
+        label="Sign In" 
+        type="submit"
+        [loading]="loading"
+        [disabled]="loginForm.invalid"
+        styleClass="w-full"
+        severity="primary">
+      </p-button>
+
+      <div class="text-center mt-4">
+        <p class="text-600 m-0">
+          Don't have an account? 
+          <a routerLink="/signup" class="text-primary font-semibold cursor-pointer no-underline hover:underline">Sign up</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+

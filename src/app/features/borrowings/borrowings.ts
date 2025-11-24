@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BorrowingService } from '../../core/services/borrowing.service';
+import { AuthService } from '../../auth/services/auth.service';
 import { Borrowing } from '../../core/models/borrowing.model';
 import { BorrowingStatus } from '../../shared/enums/borrowing-status.enum';
 
@@ -25,7 +26,10 @@ export class BorrowingsComponent implements OnInit {
 
   BorrowingStatus = BorrowingStatus;
 
-  constructor(private borrowingService: BorrowingService) {}
+  constructor(
+    private borrowingService: BorrowingService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadBorrowings();
@@ -33,18 +37,43 @@ export class BorrowingsComponent implements OnInit {
 
   loadBorrowings(): void {
     this.loading = true;
-    this.borrowingService.getAllBorrowings().subscribe({
-      next: (data) => {
-        // Filter out returned books - only show borrowed and overdue
-        this.borrowings = data.filter(b => b.status !== BorrowingStatus.RETURNED);
-        this.filteredBorrowings = this.borrowings;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Error loading borrowings:', error);
+    
+    if (this.authService.isMember) {
+      // Members: Load only their own borrowings using user ID
+      const currentUserId = this.authService.currentUserValue?.id;
+      if (currentUserId) {
+        this.borrowingService.getBorrowingsByUser(currentUserId).subscribe({
+          next: (data) => {
+            // Filter out returned books
+            this.borrowings = data.filter(b => b.status !== BorrowingStatus.RETURNED);
+            this.filteredBorrowings = this.borrowings;
+            this.loading = false;
+          },
+          error: (error) => {
+            console.error('Error loading member borrowings:', error);
+            this.loading = false;
+          }
+        });
+      } else {
+        this.borrowings = [];
+        this.filteredBorrowings = [];
         this.loading = false;
       }
-    });
+    } else {
+      // Admins: Load all borrowings
+      this.borrowingService.getAllBorrowings().subscribe({
+        next: (data) => {
+          // Filter out returned books
+          this.borrowings = data.filter(b => b.status !== BorrowingStatus.RETURNED);
+          this.filteredBorrowings = this.borrowings;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error loading all borrowings:', error);
+          this.loading = false;
+        }
+      });
+    }
   }
 
   applyFilters(): void {
@@ -95,7 +124,21 @@ export class BorrowingsComponent implements OnInit {
   }
 
   canReturn(borrowing: Borrowing): boolean {
-    return borrowing.status === BorrowingStatus.BORROWED || 
-           borrowing.status === BorrowingStatus.OVERDUE;
+    const statusAllowsReturn = borrowing.status === BorrowingStatus.BORROWED || 
+                               borrowing.status === BorrowingStatus.OVERDUE;
+    
+    // Since members only see their own borrowings (filtered by user ID),
+    // they can return any borrowing in their list
+    // Admins see all borrowings and can return any
+    return statusAllowsReturn;
+  }
+
+  // Role-based permissions
+  get isAdmin(): boolean {
+    return this.authService.isAdmin;
+  }
+
+  get isMember(): boolean {
+    return this.authService.isMember;
   }
 }
