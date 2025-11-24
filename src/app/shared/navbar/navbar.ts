@@ -5,7 +5,9 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { MemberService } from '../../core/services/member.service';
 import { User } from '../../auth/models/user.model';
+import { Member } from '../../core/models/member.model';
 import { Role } from '../../shared/enums/role.enum';
 
 @Component({
@@ -17,12 +19,19 @@ import { Role } from '../../shared/enums/role.enum';
 export class Navbar implements OnInit, OnDestroy {
   items: MenuItem[] = [];
   currentUser: User | null = null;
+    userMenuItems: MenuItem[] = [];
   private destroy$ = new Subject<void>();
+
+  // Profile dialog
+  profileDialogVisible: boolean = false;
+  editingProfile: Member | null = null;
+  loadingProfile: boolean = false;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private memberService: MemberService
   ) {}
 
   ngOnInit(): void {
@@ -31,6 +40,7 @@ export class Navbar implements OnInit, OnDestroy {
       .subscribe(user => {
         this.currentUser = user;
         this.updateMenuItems();
+        this.updateUserMenu();
       });
 
     this.router.events
@@ -43,6 +53,7 @@ export class Navbar implements OnInit, OnDestroy {
       });
 
     this.updateMenuItems();
+    this.updateUserMenu();
   }
 
   ngOnDestroy(): void {
@@ -69,7 +80,7 @@ export class Navbar implements OnInit, OnDestroy {
       },
       {
         label: 'Members',
-        icon: 'pi pi-user',
+        icon: 'pi pi-users',
         routerLink: '/members',
         visible: isAdmin,
         styleClass: currentUrl.includes('/members') ? 'active-menu-item' : ''
@@ -81,6 +92,70 @@ export class Navbar implements OnInit, OnDestroy {
         styleClass: currentUrl.includes('/borrowings') ? 'active-menu-item' : ''
       }
     ];
+  }
+
+  updateUserMenu(): void {
+    this.userMenuItems = [
+      {
+        label: 'My Profile',
+        icon: 'pi pi-user',
+        command: () => this.openProfileDialog()
+      },
+      {
+        separator: true
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        iconStyle: {
+          color: 'red'
+        },
+        
+        command: () => this.logout(),
+        styleClass: 'logout-menu-item'
+      }
+    ];
+  }
+
+  openProfileDialog(): void {
+    const userId = this.authService.currentUserValue?.id;
+    if (!userId) return;
+
+    this.loadingProfile = true;
+    this.memberService.getMemberByUserId(userId).subscribe({
+      next: (member) => {
+        this.editingProfile = { ...member };
+        this.profileDialogVisible = true;
+        this.loadingProfile = false;
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+        alert('Failed to load profile. Please try again.');
+        this.loadingProfile = false;
+      }
+    });
+  }
+
+  closeProfileDialog(): void {
+    this.profileDialogVisible = false;
+    this.editingProfile = null;
+  }
+
+  saveProfile(): void {
+    if (!this.editingProfile || !this.editingProfile.id) {
+      return;
+    }
+
+    this.memberService.updateMember(this.editingProfile.id, this.editingProfile).subscribe({
+      next: () => {
+        this.closeProfileDialog();
+        alert('Profile updated successfully!');
+      },
+      error: (error) => {
+        console.error('Error updating profile:', error);
+        alert('Failed to update profile. Please try again.');
+      }
+    });
   }
 
   getUserFullName(): string {
@@ -97,5 +172,9 @@ export class Navbar implements OnInit, OnDestroy {
 
   isDarkMode(): boolean {
     return this.themeService.isDarkMode();
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.currentUser;
   }
 }

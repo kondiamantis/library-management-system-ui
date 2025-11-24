@@ -10,11 +10,8 @@
     </div>
     
     <div class="flex align-items-center gap-3" *ngIf="currentUser">
-      <div class="text-right hidden md:block">
-        <p class="text-sm font-semibold text-900 m-0">{{ getUserFullName() }}</p>
-        <p class="text-xs text-600 m-0">{{ currentUser.role }}</p>
-      </div>
-      <p-button 
+      <!-- Theme Toggle -->
+      <!-- <p-button 
         [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'" 
         [text]="true" 
         [rounded]="true"
@@ -22,16 +19,21 @@
         (onClick)="toggleTheme()"
         [pTooltip]="isDarkMode() ? 'Light Mode' : 'Dark Mode'"
         tooltipPosition="bottom">
-      </p-button>
+      </p-button> -->
+
+      <!-- User Menu -->
       <p-button 
-        icon="pi pi-sign-out" 
-        [text]="true" 
-        [rounded]="true"
-        severity="danger"
-        (onClick)="logout()"
-        pTooltip="Logout"
-        tooltipPosition="bottom">
+        type="button" 
+        [label]="getUserFullName()" 
+        icon="pi pi-user"
+        [outlined]="true"
+        severity="secondary"
+        (onClick)="menu.toggle($event)"
+        styleClass="user-menu-button"
+        [badge]="currentUser.role"
+        badgeClass="user-role-badge">
       </p-button>
+      <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
     </div>
   </div>
   
@@ -40,3 +42,113 @@
     <p-menubar [model]="items" class="border-noround border-none bg-transparent p-0"></p-menubar>
   </div>
 </div>
+
+<!-- Profile Edit Dialog -->
+<p-dialog 
+  [(visible)]="profileDialogVisible"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  header="My Profile"
+  (onHide)="closeProfileDialog()">
+  
+    <div *ngIf="editingProfile" class="p-3 pt-4">
+      <div class="grid">
+        <!-- First Name -->
+        <div class="col-12 md:col-6 mb-3">
+          <p-floatlabel>
+            <input 
+              pInputText 
+              id="firstName"
+              [(ngModel)]="editingProfile.firstName"
+              class="w-full" />
+            <label for="firstName">First Name *</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Last Name -->
+        <div class="col-12 md:col-6 mb-3">
+          <p-floatlabel>
+            <input 
+              pInputText 
+              id="lastName"
+              [(ngModel)]="editingProfile.lastName"
+              class="w-full" />
+            <label for="lastName">Last Name *</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Email (Read-only) -->
+        <div class="col-12 mb-3">
+          <p-floatlabel>
+            <input 
+              pInputText 
+              id="email"
+              [(ngModel)]="editingProfile.email"
+              [readonly]="true"
+              class="w-full" />
+            <label for="email">Email</label>
+          </p-floatlabel>
+          <small class="text-600">Email cannot be changed</small>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="col-12 mb-3">
+          <p-floatlabel>
+            <input 
+              pInputText 
+              id="phoneNumber"
+              [(ngModel)]="editingProfile.phoneNumber"
+              class="w-full" />
+            <label for="phoneNumber">Phone Number *</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Address -->
+        <div class="col-12 mb-3">
+          <p-floatlabel>
+            <textarea 
+              pInputTextarea 
+              id="address"
+              [(ngModel)]="editingProfile.address"
+              rows="3"
+              class="w-full">
+            </textarea>
+            <label for="address">Address</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Membership Info (Read-only) -->
+        <div class="col-12 mt-2">
+          <div class="p-3 surface-100 border-round">
+            <h4 class="text-primary mt-0 mb-3">Membership Information</h4>
+            <div class="grid">
+              <div class="col-6">
+                <p class="text-600 text-sm mb-1">Member Since</p>
+                <p class="text-900 font-semibold m-0">{{ editingProfile.membershipDate | date:'mediumDate' }}</p>
+              </div>
+              <div class="col-6">
+                <p class="text-600 text-sm mb-1">Expires</p>
+                <p class="text-900 font-semibold m-0">{{ editingProfile.membershipExpiryDate | date:'mediumDate' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-content-end">
+      <p-button 
+        label="Cancel" 
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="closeProfileDialog()">
+      </p-button>
+      <p-button 
+        label="Save Changes" 
+        icon="pi pi-check"
+        (onClick)="saveProfile()">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
