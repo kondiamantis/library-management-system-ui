@@ -48,6 +48,56 @@ export class BooksComponent implements OnInit {
   get editGenreOptions() {
     return this.genreOptions.filter(g => g.value !== '');
   }
+
+  // ISBN Validation
+  isbnError: string = '';
+
+  validateISBN(isbn: string): boolean {
+    this.isbnError = '';
+    
+    if (!isbn || isbn.trim() === '') {
+      this.isbnError = 'ISBN is required';
+      return false;
+    }
+
+    // Remove hyphens and spaces
+    const cleanISBN = isbn.replace(/[-\s]/g, '');
+
+    // Simple format validation - no check digit calculation
+    if (cleanISBN.length === 10) {
+      // ISBN-10: 10 characters, all digits except last can be X
+      if (!/^[\d]{9}[\dX]$/i.test(cleanISBN)) {
+        this.isbnError = 'ISBN-10 must be 10 characters (9 digits + 1 digit or X)';
+        return false;
+      }
+      return true;
+    } else if (cleanISBN.length === 13) {
+      // ISBN-13: 13 digits, must start with 978 or 979
+      if (!/^(978|979)\d{10}$/.test(cleanISBN)) {
+        this.isbnError = 'ISBN-13 must be 13 digits starting with 978 or 979';
+        return false;
+      }
+      return true;
+    } else {
+      this.isbnError = 'ISBN must be 10 or 13 digits';
+      return false;
+    }
+  }
+
+  formatISBN(isbn: string): string {
+    if (!isbn) return '';
+    const cleanISBN = isbn.replace(/[-\s]/g, '');
+    
+    if (cleanISBN.length === 10) {
+      // Format ISBN-10: XXX-X-XXXXX-X
+      return `${cleanISBN.substring(0, 3)}-${cleanISBN[3]}-${cleanISBN.substring(4, 9)}-${cleanISBN[9]}`;
+    } else if (cleanISBN.length === 13) {
+      // Format ISBN-13: XXX-XX-XXXXX-X
+      return `${cleanISBN.substring(0, 3)}-${cleanISBN.substring(3, 5)}-${cleanISBN.substring(5, 12)}-${cleanISBN[12]}`;
+    }
+    
+    return isbn;
+  }
   
   // Sidebar
   sidebarVisible: boolean = false;
@@ -151,9 +201,15 @@ export class BooksComponent implements OnInit {
     this.selectedBook = null;
     this.editedBook = this.getEmptyBook();
     this.editMode = false;
+    this.isbnError = '';
   }
 
   saveBook(): void {
+    // Validate ISBN before saving
+    if (!this.validateISBN(this.editedBook.isbn)) {
+      return; // Error message is already set in isbnError
+    }
+
     if (this.editMode) {
       // Update existing book
       if (!this.editedBook.id) {

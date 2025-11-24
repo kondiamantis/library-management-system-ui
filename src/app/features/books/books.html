@@ -344,9 +344,16 @@
           pInputText 
           id="editIsbn" 
           [(ngModel)]="editedBook.isbn"
+          (blur)="validateISBN(editedBook.isbn)"
+          (input)="isbnError = ''"
+          [class.ng-invalid]="isbnError"
           class="w-full" />
         <label for="editIsbn">ISBN *</label>
       </p-floatlabel>
+      <small *ngIf="isbnError" class="p-error">{{ isbnError }}</small>
+      <small *ngIf="!isbnError && editedBook.isbn" class="text-600">
+        Format: 10 digits (ISBN-10) or 13 digits starting with 978/979 (ISBN-13). Hyphens and spaces are optional.
+      </small>
     </div>
 
     <!-- Genre -->
