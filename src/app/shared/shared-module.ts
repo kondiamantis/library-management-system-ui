@@ -11,12 +11,15 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
+<<<<<<< HEAD
 import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+=======
+>>>>>>> features/authentication
 
 @NgModule({
   declarations: [
@@ -34,12 +37,16 @@ import { MessageService } from 'primeng/api';
     ToolbarModule,
     ButtonModule,
     TooltipModule,
+<<<<<<< HEAD
     TagModule,
     DialogModule,
     FloatLabelModule,
     InputTextModule,
     TextareaModule,
     ToastModule
+=======
+    TagModule
+>>>>>>> features/authentication
   ],
   exports: [
     Navbar,

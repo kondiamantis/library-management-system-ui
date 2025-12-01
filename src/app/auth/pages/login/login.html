@@ -2,16 +2,35 @@
   <div class="login-card">
     <div class="login-header">
       <i class="pi pi-book text-6xl text-primary mb-3"></i>
+<<<<<<< HEAD
       <h2 class="text-3xl font-bold text-900 m-0 mb-2">Library System</h2>
       <p class="text-600 m-0">Sign in to your account</p>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <div class="field">
+=======
+      <h1 class="text-3xl font-bold text-900 m-0">Library System</h1>
+      <p class="text-600 mt-2">Sign in to your account</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="p-3 mb-3 bg-red-100 border-round">
+        <p class="text-red-700 m-0 text-sm">
+          <i class="pi pi-exclamation-circle mr-2"></i>
+          {{ errorMessage }}
+        </p>
+      </div>
+
+      <!-- Email Field -->
+      <div class="field mb-4">
+>>>>>>> features/authentication
         <p-floatlabel>
           <input 
             pInputText 
             id="email" 
+<<<<<<< HEAD
             formControlName="email" 
             class="w-full" 
             autocomplete="email"
@@ -58,6 +77,48 @@
         <p class="text-600 m-0">
           Don't have an account? 
           <a routerLink="/signup" class="text-primary font-semibold cursor-pointer no-underline hover:underline">Sign up</a>
+=======
+            [(ngModel)]="loginRequest.email"
+            name="email"
+            type="email"
+            class="w-full"
+            [disabled]="loading"
+            required />
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Password Field -->
+      <div class="field mb-4">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="password" 
+            [(ngModel)]="loginRequest.password"
+            name="password"
+            type="password"
+            class="w-full"
+            [disabled]="loading"
+            required />
+          <label for="password">Password</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Login Button -->
+      <p-button 
+        type="submit"
+        label="Sign In" 
+        icon="pi pi-sign-in"
+        [loading]="loading"
+        styleClass="w-full">
+      </p-button>
+
+      <!-- Signup Link -->
+      <div class="text-center mt-4">
+        <p class="text-600 text-sm">
+          Don't have an account? 
+          <a (click)="goToSignup()" class="text-primary cursor-pointer font-semibold">Sign up</a>
+>>>>>>> features/authentication
         </p>
       </div>
     </form>

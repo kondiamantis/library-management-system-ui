@@ -1,6 +1,9 @@
 import { Component, signal } from '@angular/core';
+<<<<<<< HEAD
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+=======
+>>>>>>> features/authentication
 import { AuthService } from './auth/services/auth.service';
 
 @Component({
@@ -11,6 +14,7 @@ import { AuthService } from './auth/services/auth.service';
 })
 export class App {
   protected readonly title = signal('library-management-system-ui');
+<<<<<<< HEAD
   showNavbar: boolean = false;
 
   constructor(
@@ -26,5 +30,12 @@ export class App {
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn;
+=======
+
+  constructor(private authService: AuthService) {}
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+>>>>>>> features/authentication
   }
 }

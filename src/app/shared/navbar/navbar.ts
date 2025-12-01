@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+<<<<<<< HEAD
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
@@ -10,6 +11,12 @@ import { User } from '../../auth/models/user.model';
 import { Member } from '../../core/models/member.model';
 import { Role } from '../../shared/enums/role.enum';
 import { MessageService } from 'primeng/api';
+=======
+import { filter } from 'rxjs/operators';
+import { AuthService } from '../../auth/services/auth.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { User } from '../../auth/models/user.model';
+>>>>>>> features/authentication
 
 @Component({
   selector: 'app-navbar',
@@ -20,6 +27,7 @@ import { MessageService } from 'primeng/api';
 export class Navbar implements OnInit, OnDestroy {
   items: MenuItem[] = [];
   currentUser: User | null = null;
+<<<<<<< HEAD
     userMenuItems: MenuItem[] = [];
   private destroy$ = new Subject<void>();
 
@@ -67,6 +75,33 @@ export class Navbar implements OnInit, OnDestroy {
     const currentUrl = this.router.url;
     const isAdmin = this.currentUser?.role === Role.ADMIN;
 
+=======
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private themeService: ThemeService
+  ) {}
+
+  ngOnInit(): void {
+    // Subscribe to current user
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.buildMenu();
+    });
+
+    // Set active item on init and on route changes
+    this.setActiveItem(this.router.url);
+    
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.setActiveItem(event.url);
+      });
+  }
+
+  private buildMenu(): void {
+>>>>>>> features/authentication
     this.items = [
       {
         label: 'Home',
@@ -81,6 +116,7 @@ export class Navbar implements OnInit, OnDestroy {
         styleClass: currentUrl.includes('/books') ? 'active-menu-item' : ''
       },
       {
+<<<<<<< HEAD
         label: 'Members',
         icon: 'pi pi-users',
         routerLink: '/members',
@@ -94,6 +130,22 @@ export class Navbar implements OnInit, OnDestroy {
         styleClass: currentUrl.includes('/borrowings') ? 'active-menu-item' : ''
       }
     ];
+=======
+        label: 'Borrowings',
+        icon: 'pi pi-calendar',
+        routerLink: '/borrowings'
+      }
+    ];
+
+    // Add Members menu only for admin
+    if (this.authService.isAdmin()) {
+      this.items.push({
+        label: 'Members',
+        icon: 'pi pi-users',
+        routerLink: '/members'
+      });
+    }
+>>>>>>> features/authentication
   }
 
   updateUserMenu(): void {
@@ -142,6 +194,7 @@ export class Navbar implements OnInit, OnDestroy {
     });
   }
 
+<<<<<<< HEAD
   closeProfileDialog(): void {
     this.profileDialogVisible = false;
     this.editingProfile = null;
@@ -172,6 +225,8 @@ export class Navbar implements OnInit, OnDestroy {
     });
   }
 
+=======
+>>>>>>> features/authentication
   getUserFullName(): string {
     return this.authService.getUserFullName();
   }
@@ -187,8 +242,11 @@ export class Navbar implements OnInit, OnDestroy {
   isDarkMode(): boolean {
     return this.themeService.isDarkMode();
   }
+<<<<<<< HEAD
 
   isLoggedIn(): boolean {
     return !!this.currentUser;
   }
+=======
+>>>>>>> features/authentication
 }
