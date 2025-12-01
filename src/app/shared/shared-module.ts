@@ -15,6 +15,8 @@ import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -36,13 +38,17 @@ import { TextareaModule } from 'primeng/textarea';
     DialogModule,
     FloatLabelModule,
     InputTextModule,
-    TextareaModule
+    TextareaModule,
+    ToastModule
   ],
   exports: [
     Navbar,
     Layout,
     CommonModule,
     RouterModule
+  ],
+  providers: [
+    MessageService
   ]
 })
 export class SharedModule { }

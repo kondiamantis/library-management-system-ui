@@ -21,7 +21,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { ScrollTopModule } from 'primeng/scrolltop';
-import { ConfirmationService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { ConfirmationService } from 'primeng/api';
     TagModule,
     TooltipModule,
     ScrollTopModule,
+    ToastModule,
   ],
   exports: [
     BooksComponent,
@@ -58,7 +60,8 @@ import { ConfirmationService } from 'primeng/api';
     BorrowingsComponent
   ],
   providers: [
-    ConfirmationService
+    ConfirmationService,
+    MessageService
   ]
 })
 export class FeaturesModule { }

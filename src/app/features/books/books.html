@@ -1,4 +1,7 @@
 <div class="p-2">
+  <!-- Toast Messages -->
+  <p-toast></p-toast>
+  
   <!-- Confirm Dialog -->
   <p-confirmdialog></p-confirmdialog>
 
@@ -6,6 +9,9 @@
   <p-dialog 
     [(visible)]="borrowDialogVisible"
     [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [dismissableMask]="true"
     [style]="{ width: '400px' }"
     [header]="'Confirm Borrowing'"
     (onHide)="closeBorrowDialog()">

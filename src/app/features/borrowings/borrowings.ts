@@ -3,6 +3,7 @@ import { BorrowingService } from '../../core/services/borrowing.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { Borrowing } from '../../core/models/borrowing.model';
 import { BorrowingStatus } from '../../shared/enums/borrowing-status.enum';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-borrowings',
@@ -28,7 +29,8 @@ export class BorrowingsComponent implements OnInit {
 
   constructor(
     private borrowingService: BorrowingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -96,12 +98,20 @@ export class BorrowingsComponent implements OnInit {
     this.borrowingService.returnBook(borrowing.id).subscribe({
       next: () => {
         this.loadBorrowings();
-        alert(`Book "${borrowing.book.title}" returned successfully!`);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Book "${borrowing.book.title}" returned successfully!`
+        });
       },
       error: (error) => {
         console.error('Error returning book:', error);
         const errorMessage = error.error?.message || 'Failed to return book. Please try again.';
-        alert(errorMessage);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage
+        });
       }
     });
   }

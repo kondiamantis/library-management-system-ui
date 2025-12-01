@@ -4,7 +4,7 @@ import { BorrowingService } from '../../core/services/borrowing.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { Member } from '../../core/models/member.model';
 import { Borrowing } from '../../core/models/borrowing.model';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-members',
@@ -43,7 +43,8 @@ export class MembersComponent implements OnInit {
     private memberService: MemberService,
     private borrowingService: BorrowingService,
     public authService: AuthService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -139,11 +140,19 @@ export class MembersComponent implements OnInit {
       next: () => {
         this.loadAllMembers();
         this.closeEditDialog();
-        alert('Member updated successfully!');
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Member updated successfully!'
+        });
       },
       error: (error) => {
         console.error('Error updating member:', error);
-        alert('Failed to update member. Please try again.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update member. Please try again.'
+        });
       }
     });
   }
@@ -159,11 +168,19 @@ export class MembersComponent implements OnInit {
         this.memberService.toggleMemberStatus(member.id!).subscribe({
           next: () => {
             this.loadAllMembers();
-            alert(`Member ${member.isActive ? 'deactivated' : 'activated'} successfully!`);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: `Member ${member.isActive ? 'deactivated' : 'activated'} successfully!`
+            });
           },
           error: (error) => {
             console.error('Error toggling member status:', error);
-            alert('Failed to update member status. Please try again.');
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to update member status. Please try again.'
+            });
           }
         });
       }
@@ -210,11 +227,19 @@ export class MembersComponent implements OnInit {
       next: () => {
         this.loadMemberProfile();
         this.closeEditDialog();
-        alert('Profile updated successfully!');
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Profile updated successfully!'
+        });
       },
       error: (error) => {
         console.error('Error updating profile:', error);
-        alert('Failed to update profile. Please try again.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update profile. Please try again.'
+        });
       }
     });
   }

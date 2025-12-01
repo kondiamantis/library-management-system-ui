@@ -8,7 +8,7 @@ import { Member } from '../../core/models/member.model';
 import { BorrowingRequest } from '../../core/models/borrowing-request.model';
 import { BookGenre } from '../../shared/enums/book-genre.enum';
 import { BookStatus } from '../../shared/enums/book-status.enum';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-books',
@@ -119,7 +119,8 @@ export class BooksComponent implements OnInit {
     private borrowingService: BorrowingService,
     private memberService: MemberService,
     public authService: AuthService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -227,7 +228,11 @@ export class BooksComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error updating book:', error);
-          alert('Failed to update book. Please try again.');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update book. Please try again.'
+          });
         }
       });
     } else {
@@ -240,7 +245,11 @@ export class BooksComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error creating book:', error);
-          alert('Failed to create book. Please try again.');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to create book. Please try again.'
+          });
         }
       });
     }
@@ -270,14 +279,22 @@ export class BooksComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading members:', error);
-        alert('Failed to load members. Please try again.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load members. Please try again.'
+        });
       }
     });
   }
 
   confirmBorrowing(): void {
     if (!this.selectedBookToBorrow?.id) {
-      alert('Invalid book selected');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Invalid book selected'
+      });
       return;
     }
   
@@ -292,7 +309,11 @@ export class BooksComponent implements OnInit {
     } else {
       // For admins, send the selected member ID
       if (!this.selectedMemberId) {
-        alert('Please select a member');
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Selection Required',
+          detail: 'Please select a member'
+        });
         return;
       }
       request.memberId = this.selectedMemberId;
@@ -302,12 +323,20 @@ export class BooksComponent implements OnInit {
       next: () => {
         this.loadBooks();
         this.borrowDialogVisible = false;
-        alert(`Book "${this.selectedBookToBorrow?.title}" borrowed successfully!`);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Book "${this.selectedBookToBorrow?.title}" borrowed successfully!`
+        });
       },
       error: (error) => {
         console.error('Error borrowing book:', error);
         const errorMessage = error.error?.message || error.error || 'Failed to borrow book. Please try again.';
-        alert(errorMessage);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage
+        });
       }
     });
   }
@@ -354,12 +383,22 @@ export class BooksComponent implements OnInit {
     this.bookService.deleteBook(bookId).subscribe({
       next: () => {
         // Remove from local array
+        const deletedBook = this.books.find(b => b.id === bookId);
         this.books = this.books.filter(b => b.id !== bookId);
         this.applyFilters();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Book "${deletedBook?.title}" deleted successfully!`
+        });
       },
       error: (error) => {
         console.error('Error deleting book:', error);
-        alert('Failed to delete book. Please try again.');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete book. Please try again.'
+        });
       }
     });
   }
