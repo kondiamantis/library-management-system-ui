@@ -28,15 +28,7 @@ import Aura from '@primeng/themes/aura';
     AuthModule,
   ],
   providers: [
-<<<<<<< HEAD
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
-=======
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: JwtInterceptor,
-      multi: true
-    }
->>>>>>> features/authentication
   ],
   bootstrap: [App]
 })

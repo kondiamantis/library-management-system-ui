@@ -17,12 +17,12 @@
   
 body {
     font-family: var(--font-family);
-    background-color: var(--surface-ground);
+    background-color: #f8f9fa;
     color: var(--text-color);
   }
   
 .card {
-    background: var(--surface-card);
+    background: white;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

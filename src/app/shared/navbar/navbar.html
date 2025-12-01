@@ -12,14 +12,7 @@
     </div>
     
     <div class="flex align-items-center gap-3" *ngIf="currentUser">
-<<<<<<< HEAD
       <!-- Theme Toggle -->
-=======
-      <div class="text-right hidden md:block">
-        <p class="text-sm font-semibold text-900 m-0">{{ getUserFullName() }}</p>
-        <p class="text-xs text-600 m-0">{{ currentUser.role }}</p>
-      </div>
->>>>>>> features/authentication
       <!-- <p-button 
         [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'" 
         [text]="true" 
@@ -29,7 +22,6 @@
         [pTooltip]="isDarkMode() ? 'Light Mode' : 'Dark Mode'"
         tooltipPosition="bottom">
       </p-button> -->
-<<<<<<< HEAD
 
       <!-- User Menu -->
       <p-button 
@@ -42,16 +34,6 @@
         styleClass="user-menu-button"
         [badge]="currentUser.role"
         badgeClass="user-role-badge">
-=======
-      <p-button 
-        icon="pi pi-sign-out" 
-        [text]="true" 
-        [rounded]="true"
-        severity="danger"
-        (onClick)="logout()"
-        pTooltip="Logout"
-        tooltipPosition="bottom">
->>>>>>> features/authentication
       </p-button>
       <p-menu #menu [model]="userMenuItems" [popup]="true"></p-menu>
     </div>

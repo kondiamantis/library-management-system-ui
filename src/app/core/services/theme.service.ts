@@ -7,10 +7,6 @@ export class ThemeService {
   private readonly THEME_KEY = 'selected-theme';
   
   constructor() {
-<<<<<<< HEAD
-=======
-    // Load saved theme on app start
->>>>>>> features/authentication
     const savedTheme = localStorage.getItem(this.THEME_KEY);
     if (savedTheme === 'dark') {
       this.enableDarkMode();

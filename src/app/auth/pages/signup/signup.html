@@ -2,7 +2,6 @@
   <div class="signup-card">
     <div class="signup-header">
       <i class="pi pi-book text-6xl text-primary mb-3"></i>
-<<<<<<< HEAD
       <h2 class="text-3xl font-bold text-900 m-0 mb-2">Create Account</h2>
       <p class="text-600 m-0">Join our library system</p>
     </div>
@@ -37,58 +36,10 @@
       </div>
 
       <div class="field">
-=======
-      <h1 class="text-3xl font-bold text-900 m-0">Create Account</h1>
-      <p class="text-600 mt-2">Join our library system</p>
-    </div>
-
-    <form (ngSubmit)="onSubmit()" class="signup-form">
-      <!-- Error Message -->
-      <div *ngIf="errorMessage" class="p-3 mb-3 bg-red-100 border-round">
-        <p class="text-red-700 m-0 text-sm">
-          <i class="pi pi-exclamation-circle mr-2"></i>
-          {{ errorMessage }}
-        </p>
-      </div>
-
-      <!-- First Name -->
-      <div class="field mb-4">
-        <p-floatlabel>
-          <input 
-            pInputText 
-            id="firstName" 
-            [(ngModel)]="signupRequest.firstName"
-            name="firstName"
-            class="w-full"
-            [disabled]="loading"
-            required />
-          <label for="firstName">First Name</label>
-        </p-floatlabel>
-      </div>
-
-      <!-- Last Name -->
-      <div class="field mb-4">
-        <p-floatlabel>
-          <input 
-            pInputText 
-            id="lastName" 
-            [(ngModel)]="signupRequest.lastName"
-            name="lastName"
-            class="w-full"
-            [disabled]="loading"
-            required />
-          <label for="lastName">Last Name</label>
-        </p-floatlabel>
-      </div>
-
-      <!-- Email -->
-      <div class="field mb-4">
->>>>>>> features/authentication
         <p-floatlabel>
           <input 
             pInputText 
             id="email" 
-<<<<<<< HEAD
             formControlName="email" 
             class="w-full"
             autocomplete="email"
@@ -138,49 +89,6 @@
         <p class="text-600 m-0">
           Already have an account? 
           <a routerLink="/login" class="text-primary font-semibold cursor-pointer no-underline hover:underline">Sign in</a>
-=======
-            [(ngModel)]="signupRequest.email"
-            name="email"
-            type="email"
-            class="w-full"
-            [disabled]="loading"
-            required />
-          <label for="email">Email</label>
-        </p-floatlabel>
-      </div>
-
-      <!-- Password -->
-      <div class="field mb-4">
-        <p-floatlabel>
-          <input 
-            pInputText 
-            id="password" 
-            [(ngModel)]="signupRequest.password"
-            name="password"
-            type="password"
-            class="w-full"
-            [disabled]="loading"
-            required />
-          <label for="password">Password</label>
-        </p-floatlabel>
-        <small class="text-600">Minimum 6 characters</small>
-      </div>
-
-      <!-- Signup Button -->
-      <p-button 
-        type="submit"
-        label="Create Account" 
-        icon="pi pi-user-plus"
-        [loading]="loading"
-        styleClass="w-full">
-      </p-button>
-
-      <!-- Login Link -->
-      <div class="text-center mt-4">
-        <p class="text-600 text-sm">
-          Already have an account? 
-          <a (click)="goToLogin()" class="text-primary cursor-pointer font-semibold">Sign in</a>
->>>>>>> features/authentication
         </p>
       </div>
     </form>

@@ -9,7 +9,6 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { AdminGuard } from './auth/guards/admin.guard';
 
 export const routes: Routes = [
-<<<<<<< HEAD
     { path: 'login', component: LoginComponent },
     { path: 'signup', component: SignupComponent },
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -18,13 +17,4 @@ export const routes: Routes = [
     { path: 'members', component: MembersComponent, canActivate: [AuthGuard] },
     { path: 'borrowings', component: BorrowingsComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '/dashboard' }
-=======
-    { path: '', redirectTo: '/login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
-    { path: 'signup', component: SignupComponent },
-    { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-    { path: 'books', component: BooksComponent, canActivate: [AuthGuard] },
-    { path: 'members', component: MembersComponent, canActivate: [AuthGuard, AdminGuard] },
-    { path: 'borrowings', component: BorrowingsComponent, canActivate: [AuthGuard] },
->>>>>>> features/authentication
   ];
