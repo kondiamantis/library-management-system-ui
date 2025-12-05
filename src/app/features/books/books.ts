@@ -373,17 +373,17 @@ export class BooksComponent implements OnInit {
     // Check if book has borrowings before showing confirmation
     this.borrowingService.getBorrowingsByBook(book.id).subscribe({
       next: (borrowings) => {
-        // Filter to only count active borrowings (not returned)
+        // Filter to only count active borrowings from active members (not returned)
         const activeBorrowings = borrowings.filter(
-          b => b.status !== BorrowingStatus.RETURNED
+          b => b.status !== BorrowingStatus.RETURNED && b.member?.isActive === true
         );
         
         if (activeBorrowings.length > 0) {
-          // Book has active borrowings - show error message
+          // Book has active borrowings from active members - show error message
           this.messageService.add({
             severity: 'error',
             summary: 'Cannot Delete Book',
-            detail: `Cannot delete "${book.title}" because it has ${activeBorrowings.length} borrowing record(s). Please return all borrowed copies first.`,
+            detail: `Cannot delete "${book.title}" because it has ${activeBorrowings.length} active borrowing record(s) from active members. Please return all borrowed copies first.`,
             life: 5000
           });
         } else {
