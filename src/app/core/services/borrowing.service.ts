@@ -44,4 +44,8 @@ export class BorrowingService {
   getBorrowingsByStatus(status: string): Observable<Borrowing[]> {
     return this.http.get<Borrowing[]>(`${this.apiUrl}/status/${status}`);
   }
+
+  getBorrowingsByBook(bookId: number): Observable<Borrowing[]> {
+    return this.http.get<Borrowing[]>(`${this.apiUrl}/book/${bookId}`);
+  }
 }

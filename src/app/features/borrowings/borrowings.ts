@@ -3,7 +3,7 @@ import { BorrowingService } from '../../core/services/borrowing.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { Borrowing } from '../../core/models/borrowing.model';
 import { BorrowingStatus } from '../../shared/enums/borrowing-status.enum';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-borrowings',
@@ -30,7 +30,8 @@ export class BorrowingsComponent implements OnInit {
   constructor(
     private borrowingService: BorrowingService,
     private authService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -88,6 +89,23 @@ export class BorrowingsComponent implements OnInit {
   clearFilters(): void {
     this.statusFilter = '';
     this.filteredBorrowings = this.borrowings;
+  }
+
+  confirmReturnBook(borrowing: Borrowing): void {
+    if (!borrowing.id) {
+      return;
+    }
+
+    this.confirmationService.confirm({
+      message: `Are you sure you want to return "${borrowing.book.title}"?`,
+      header: 'Return Book Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-info',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.returnBook(borrowing);
+      }
+    });
   }
 
   returnBook(borrowing: Borrowing): void {

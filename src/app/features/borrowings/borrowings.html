@@ -1,6 +1,10 @@
 <div class="p-2">
   <!-- Toast Messages -->
   <p-toast></p-toast>
+  
+  <!-- Confirm Dialog -->
+  <p-confirmdialog></p-confirmdialog>
+  
   <!-- Filter Section -->
   <p-card class="mb-2">
     <ng-template pTemplate="header">
@@ -113,7 +117,7 @@
               severity="success"
               size="small"
               [outlined]="true"
-              (onClick)="returnBook(borrowing)">
+              (onClick)="confirmReturnBook(borrowing)">
             </p-button>
             <span *ngIf="!canReturn(borrowing)" class="text-500">-</span>
           </td>

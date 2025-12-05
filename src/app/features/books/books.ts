@@ -8,6 +8,7 @@ import { Member } from '../../core/models/member.model';
 import { BorrowingRequest } from '../../core/models/borrowing-request.model';
 import { BookGenre } from '../../shared/enums/book-genre.enum';
 import { BookStatus } from '../../shared/enums/book-status.enum';
+import { BorrowingStatus } from '../../shared/enums/borrowing-status.enum';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
@@ -324,7 +325,7 @@ export class BooksComponent implements OnInit {
         this.loadBooks();
         this.borrowDialogVisible = false;
         this.messageService.add({
-          severity: 'success',
+          severity: 'info',
           summary: 'Success',
           detail: `Book "${this.selectedBookToBorrow?.title}" borrowed successfully!`
         });
@@ -365,40 +366,94 @@ export class BooksComponent implements OnInit {
   }
 
   confirmDelete(book: Book): void {
-    this.confirmationService.confirm({
-      message: `Are you sure you want to delete "${book.title}"?`,
-      header: 'Delete Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => {
-        if (book.id) {
-          this.deleteBook(book.id);
+    if (!book.id) {
+      return;
+    }
+
+    // Check if book has borrowings before showing confirmation
+    this.borrowingService.getBorrowingsByBook(book.id).subscribe({
+      next: (borrowings) => {
+        // Filter to only count active borrowings (not returned)
+        const activeBorrowings = borrowings.filter(
+          b => b.status !== BorrowingStatus.RETURNED
+        );
+        
+        if (activeBorrowings.length > 0) {
+          // Book has active borrowings - show error message
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Cannot Delete Book',
+            detail: `Cannot delete "${book.title}" because it has ${activeBorrowings.length} borrowing record(s). Please return all borrowed copies first.`,
+            life: 5000
+          });
+        } else {
+          // No borrowings - show confirmation dialog
+          this.confirmationService.confirm({
+            message: `Are you sure you want to delete "${book.title}"?`,
+            header: 'Delete Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            acceptButtonStyleClass: 'p-button-danger',
+            rejectButtonStyleClass: 'p-button-secondary',
+            accept: () => {
+              this.deleteBook(book.id!);
+            }
+          });
         }
+      },
+      error: (error) => {
+        console.error('Error checking borrowings:', error);
+        // If check fails, still show confirmation but handle error on delete
+        this.confirmationService.confirm({
+          message: `Are you sure you want to delete "${book.title}"?`,
+          header: 'Delete Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          acceptButtonStyleClass: 'p-button-danger',
+          rejectButtonStyleClass: 'p-button-secondary',
+          accept: () => {
+            this.deleteBook(book.id!);
+          }
+        });
       }
     });
   }
 
   deleteBook(bookId: number): void {
+    // Get book info before deletion for error messages
+    const bookToDelete = this.books.find(b => b.id === bookId);
+    
     this.bookService.deleteBook(bookId).subscribe({
       next: () => {
         // Remove from local array
-        const deletedBook = this.books.find(b => b.id === bookId);
         this.books = this.books.filter(b => b.id !== bookId);
         this.applyFilters();
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: `Book "${deletedBook?.title}" deleted successfully!`
+          detail: `Book "${bookToDelete?.title}" deleted successfully!`
         });
       },
       error: (error) => {
         console.error('Error deleting book:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to delete book. Please try again.'
-        });
+        
+        // Check if error is due to foreign key constraint
+        const errorMessage = error.error?.message || error.message || '';
+        const errorDetail = error.error?.detail || '';
+        const fullError = `${errorMessage} ${errorDetail}`.toLowerCase();
+        
+        if (fullError.includes('foreign key') || fullError.includes('borrowings') || fullError.includes('constraint')) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Cannot Delete Book',
+            detail: `Cannot delete "${bookToDelete?.title}" because it has borrowing records in the database. The backend needs to be updated to allow deletion of books with only returned borrowings.`,
+            life: 7000
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to delete book. Please try again.'
+          });
+        }
       }
     });
   }
