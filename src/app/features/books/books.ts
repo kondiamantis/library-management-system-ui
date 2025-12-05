@@ -8,6 +8,7 @@ import { Member } from '../../core/models/member.model';
 import { BorrowingRequest } from '../../core/models/borrowing-request.model';
 import { BookGenre } from '../../shared/enums/book-genre.enum';
 import { BookStatus } from '../../shared/enums/book-status.enum';
+import { BorrowingStatus } from '../../shared/enums/borrowing-status.enum';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
@@ -372,12 +373,17 @@ export class BooksComponent implements OnInit {
     // Check if book has borrowings before showing confirmation
     this.borrowingService.getBorrowingsByBook(book.id).subscribe({
       next: (borrowings) => {
-        if (borrowings.length > 0) {
-          // Book has borrowings - show error message
+        // Filter to only count active borrowings (not returned)
+        const activeBorrowings = borrowings.filter(
+          b => b.status !== BorrowingStatus.RETURNED
+        );
+        
+        if (activeBorrowings.length > 0) {
+          // Book has active borrowings - show error message
           this.messageService.add({
             severity: 'error',
             summary: 'Cannot Delete Book',
-            detail: `Cannot delete "${book.title}" because it has ${borrowings.length} borrowing record(s). Please return all borrowed copies first.`,
+            detail: `Cannot delete "${book.title}" because it has ${activeBorrowings.length} borrowing record(s). Please return all borrowed copies first.`,
             life: 5000
           });
         } else {
@@ -431,12 +437,15 @@ export class BooksComponent implements OnInit {
         
         // Check if error is due to foreign key constraint
         const errorMessage = error.error?.message || error.message || '';
-        if (errorMessage.includes('foreign key') || errorMessage.includes('borrowings')) {
+        const errorDetail = error.error?.detail || '';
+        const fullError = `${errorMessage} ${errorDetail}`.toLowerCase();
+        
+        if (fullError.includes('foreign key') || fullError.includes('borrowings') || fullError.includes('constraint')) {
           this.messageService.add({
             severity: 'error',
             summary: 'Cannot Delete Book',
-            detail: `Cannot delete "${bookToDelete?.title}" because it has active borrowing records. Please return all borrowed copies first.`,
-            life: 5000
+            detail: `Cannot delete "${bookToDelete?.title}" because it has borrowing records in the database. The backend needs to be updated to allow deletion of books with only returned borrowings.`,
+            life: 7000
           });
         } else {
           this.messageService.add({
