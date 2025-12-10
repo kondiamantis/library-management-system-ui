@@ -1,59 +1,76 @@
-# LibraryManagementSystemUi
+# Library Management System
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+A modern library management system built with Angular and Spring Boot for managing books, members, and borrowings.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Authentication**: User login and signup with role-based access
+- **Books Management**: Browse, search, and filter books (Admin can create, edit, delete)
+- **Members Management**: View members and manage profiles (Admin can activate/deactivate members)
+- **Borrowings Management**: Track book borrowings and returns
+- **Dashboard**: View library statistics and overview
+
+## Prerequisites
+
+- Node.js (v18 or higher)
+- npm (comes with Node.js)
+- Backend API running on `http://localhost:8080`
+
+## Setup
+
+1. **Install dependencies** (this installs Angular and all required packages)
+   ```bash
+   npm install
+   ```
+
+2. **Ensure backend is running**
+   - Make sure the Spring Boot backend API is running on `http://localhost:8080`
+
+## Running the Application
+
+1. **Start the development server**
+   ```bash
+   npm start
+   ```
+
+   **Note**: If you prefer to use Angular CLI commands directly, you can install it globally:
+   ```bash
+   npm install -g @angular/cli
+   ```
+   Then use `ng serve` instead of `npm start`.
+
+2. **Open your browser**
+   - Navigate to `http://localhost:4200`
+   - The application will automatically reload when you make changes
+
+## User Roles
+
+- **Member**: Default role for new signups. Can browse books, borrow books, and view their own profile and borrowings.
+- **Admin**: Full system access. Can manage books, members, and all borrowings. Admin accounts must be created through the backend/database.
+
+## Getting Started
+
+### Default Users
+
+When the backend runs for the first time, it automatically creates 2 default users:
+
+1. **Member User**: Default member account for testing
+2. **Admin User**: Default admin account with full system access
+
+**Note**: Check the backend documentation or code for the default credentials.
+
+### Using the Application
+
+1. **Login with default account**: Navigate to `/login` and use one of the default accounts
+2. **Or create a new account**: Navigate to `/signup` and register (creates a Member account by default)
+3. **Explore**: Browse books, view your profile, and manage borrowings
+
+**Note**: Admin accounts cannot be created through the frontend signup. Use the default admin account or create admin accounts through the backend API or database.
+
+## Build for Production
 
 ```bash
-ng serve
+npm run build
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The build artifacts will be stored in the `dist/` directory.
