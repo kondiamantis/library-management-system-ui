@@ -67,7 +67,7 @@
       <ng-template pTemplate="header">
         <tr>
           <th pSortableColumn="book.title">Book Title</th>
-          <th pSortableColumn="member.firstName">Member</th>
+          <th pSortableColumn="member.firstName" *ngIf="isAdmin">Member</th>
           <th pSortableColumn="borrowDate">Borrow Date</th>
           <th pSortableColumn="dueDate">Due Date</th>
           <th pSortableColumn="returnDate">Return Date</th>
@@ -84,7 +84,7 @@
             <br>
             <small class="text-600">by {{ borrowing.book.author }}</small>
           </td>
-          <td>
+          <td *ngIf="isAdmin">
             <span>{{ getMemberFullName(borrowing) }}</span>
             <br>
             <small class="text-600">{{ borrowing.member.email }}</small>
