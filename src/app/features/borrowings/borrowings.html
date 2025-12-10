@@ -73,7 +73,7 @@
           <th pSortableColumn="returnDate">Return Date</th>
           <th pSortableColumn="status">Status</th>
           <th pSortableColumn="lateFee">Late Fee</th>
-          <th>Actions</th>
+          <th *ngIf="isAdmin">Actions</th>
         </tr>
       </ng-template>
 
@@ -109,7 +109,7 @@
               $0.00
             </span>
           </td>
-          <td>
+          <td *ngIf="isAdmin">
             <p-button 
               *ngIf="canReturn(borrowing)"
               label="Return"
@@ -126,7 +126,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="8" class="text-center py-5">
+          <td [attr.colspan]="isAdmin ? 8 : 7" class="text-center py-5">
             <i class="pi pi-inbox text-4xl text-400 mb-3"></i>
             <p class="text-600">No borrowings found.</p>
           </td>

@@ -228,7 +228,7 @@
           <th>Status
             <p-sortIcon field="status"></p-sortIcon>
           </th>
-          <th>Actions</th>
+          <th *ngIf="isAdmin">Actions</th>
         </tr>
       </ng-template>
 
@@ -254,7 +254,7 @@
               [severity]="getAvailabilityStatus(book)">
             </p-tag>
           </td>
-          <td>
+          <td *ngIf="isAdmin">
             <div class="flex gap-2">
               <p-button 
                 *ngIf="canEditBook"
@@ -268,6 +268,7 @@
                 tooltipPosition="top">
               </p-button>
               <p-button 
+                *ngIf="canBorrowBook"
                 icon="pi pi-book" 
                 [rounded]="true"
                 [outlined]="true"
@@ -296,7 +297,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="8" class="text-center py-5">
+          <td [attr.colspan]="isAdmin ? 8 : 7" class="text-center py-5">
             <i class="pi pi-book text-4xl text-400 mb-3"></i>
             <p class="text-600">No books found. Try adjusting your filters.</p>
           </td>

@@ -257,17 +257,17 @@ export class BooksComponent implements OnInit {
   }
 
   borrowBook(book: Book): void {
+    // Only admins can borrow books
+    if (!this.isAdmin) {
+      return;
+    }
+    
     this.selectedBookToBorrow = book;
     this.borrowingDays = 14;
     
-    // For members, auto-select themselves
-    if (this.isMember) {
-      this.selectedMemberId = this.authService.currentUserValue?.id || null;
-    } else {
-      // For admins, show member selection
-      this.selectedMemberId = null;
-      this.loadMembers();
-    }
+    // For admins, show member selection
+    this.selectedMemberId = null;
+    this.loadMembers();
     
     this.borrowDialogVisible = true;
   }
@@ -290,6 +290,11 @@ export class BooksComponent implements OnInit {
   }
 
   confirmBorrowing(): void {
+    // Only admins can borrow books
+    if (!this.isAdmin) {
+      return;
+    }
+    
     if (!this.selectedBookToBorrow?.id) {
       this.messageService.add({
         severity: 'error',
@@ -299,40 +304,21 @@ export class BooksComponent implements OnInit {
       return;
     }
   
-    // For members, check if their account is active
-    if (this.isMember) {
-      const currentUser = this.authService.currentUserValue;
-      if (currentUser && currentUser.isActive === false) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Account Deactivated',
-          detail: 'Your account has been deactivated. Please contact an administrator to reactivate your account.',
-          life: 5000
-        });
-        return;
-      }
-    }
-  
     const request: BorrowingRequest = {
       bookId: this.selectedBookToBorrow.id,
       borrowingDays: this.borrowingDays
     };
   
-    // For members, send their user ID
-    if (this.isMember) {
-      request.userId = this.authService.currentUserValue?.id;
-    } else {
-      // For admins, send the selected member ID
-      if (!this.selectedMemberId) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Selection Required',
-          detail: 'Please select a member'
-        });
-        return;
-      }
-      request.memberId = this.selectedMemberId;
+    // For admins, send the selected member ID
+    if (!this.selectedMemberId) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Selection Required',
+        detail: 'Please select a member'
+      });
+      return;
     }
+    request.memberId = this.selectedMemberId;
   
     this.borrowingService.borrowBook(request).subscribe({
       next: () => {
@@ -525,6 +511,6 @@ export class BooksComponent implements OnInit {
   }
 
   get canBorrowBook(): boolean {
-    return true; // Both admin and member can borrow
+    return this.isAdmin; // Only admin can borrow books for members
   }
 }

@@ -152,12 +152,14 @@ export class BorrowingsComponent implements OnInit {
   }
 
   canReturn(borrowing: Borrowing): boolean {
+    // Only admins can return books
+    if (!this.isAdmin) {
+      return false;
+    }
+    
     const statusAllowsReturn = borrowing.status === BorrowingStatus.BORROWED || 
                                borrowing.status === BorrowingStatus.OVERDUE;
     
-    // Since members only see their own borrowings (filtered by user ID),
-    // they can return any borrowing in their list
-    // Admins see all borrowings and can return any
     return statusAllowsReturn;
   }
 
