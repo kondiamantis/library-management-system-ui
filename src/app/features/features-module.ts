@@ -16,6 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
+import { PasswordModule } from 'primeng/password';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TagModule } from 'primeng/tag';
@@ -46,6 +47,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     InputNumberModule,
     SelectModule,
     TextareaModule,
+    PasswordModule,
     IconFieldModule,
     InputIconModule,
     TagModule,

@@ -17,7 +17,6 @@
     <div class="formgrid grid">
       <!-- Book Title Search -->
       <div class="field col-12 md:col-6 lg:col-3">
-        <p-floatlabel>
           <input 
             pInputText 
             id="bookTitleFilter"
@@ -25,8 +24,6 @@
             (input)="applyFilters()"
             placeholder="Search by book title or author" 
             class="w-full" />
-          <label for="bookTitleFilter">Search Book</label>
-        </p-floatlabel>
       </div>
 
       <!-- Member Filter (Admin Only) -->
@@ -76,7 +73,7 @@
         <p-button 
           label="Clear Filters" 
           icon="pi pi-filter-slash" 
-          severity="secondary"
+          severity="warn"
           [outlined]="true"
           (onClick)="clearFilters()"
           styleClass="w-full">
@@ -87,14 +84,7 @@
 
   <!-- Borrowings Table -->
   <p-card>
-    <ng-template pTemplate="header">
-      <div class="flex align-items-center justify-content-between px-3 pt-3">
-        <div>
-          <h3 class="text-xl font-semibold m-0 text-900">Borrowings List</h3>
-          <p class="text-sm text-600 mt-1 mb-0">Total: {{ filteredBorrowings.length }} borrowings</p>
-        </div>
-      </div>
-    </ng-template>
+    
 
     <p-table 
       [value]="filteredBorrowings" 

@@ -38,6 +38,11 @@ export class MembersComponent implements OnInit {
   // Edit mode
   isEditMode: boolean = false;
   editingMember: Member | null = null;
+  
+  // Create mode
+  createDialogVisible: boolean = false;
+  newMember: Member = this.getEmptyMember();
+  newMemberPassword: string = '';
 
   constructor(
     private memberService: MemberService,
@@ -119,6 +124,18 @@ export class MembersComponent implements OnInit {
     });
   }
 
+  openCreateDialog(): void {
+    this.newMember = this.getEmptyMember();
+    this.newMemberPassword = '';
+    this.createDialogVisible = true;
+  }
+
+  closeCreateDialog(): void {
+    this.createDialogVisible = false;
+    this.newMember = this.getEmptyMember();
+    this.newMemberPassword = '';
+  }
+
   openEditDialog(member: Member): void {
     this.isEditMode = true;
     this.editingMember = { ...member };
@@ -129,6 +146,74 @@ export class MembersComponent implements OnInit {
     this.editDialogVisible = false;
     this.editingMember = null;
     this.isEditMode = false;
+  }
+
+  createMember(): void {
+    // Validate required fields
+    if (!this.newMember.firstName || !this.newMember.lastName || 
+        !this.newMember.email || !this.newMember.phoneNumber || 
+        !this.newMemberPassword) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please fill in all required fields including password.'
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.newMember.email)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please enter a valid email address.'
+      });
+      return;
+    }
+
+    // Validate password length
+    if (this.newMemberPassword.length < 6) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Password must be at least 6 characters long.'
+      });
+      return;
+    }
+
+    // Create member with password (backend will create User and Member)
+    // Send member data with password - backend should handle User creation
+    const memberData = {
+      firstName: this.newMember.firstName,
+      lastName: this.newMember.lastName,
+      email: this.newMember.email,
+      phoneNumber: this.newMember.phoneNumber,
+      address: this.newMember.address || '',
+      password: this.newMemberPassword,
+      isActive: true
+    };
+
+    this.memberService.createMember(memberData as any).subscribe({
+      next: () => {
+        this.loadAllMembers();
+        this.closeCreateDialog();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Member created successfully!'
+        });
+      },
+      error: (error) => {
+        console.error('Error creating member:', error);
+        const errorMessage = error.error?.message || error.error || 'Failed to create member. Please try again.';
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage
+        });
+      }
+    });
   }
 
   saveMember(): void {
@@ -278,6 +363,18 @@ export class MembersComponent implements OnInit {
     if (this.isExpired(member.membershipExpiryDate)) return 'Expired';
     if (this.isExpiringSoon(member.membershipExpiryDate)) return 'Expiring Soon';
     return 'Active';
+  }
+
+  private getEmptyMember(): Member {
+    return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      address: '',
+      membershipDate: new Date().toISOString().split('T')[0],
+      isActive: true
+    };
   }
 
   // Role checks

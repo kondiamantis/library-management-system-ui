@@ -3,10 +3,18 @@
 
 <!-- ADMIN VIEW -->
 <div *ngIf="isAdmin" class="members-container">
-  <p-card>
+  <p-card class="mb-2">
     <ng-template pTemplate="header">
       <div class="flex justify-content-between align-items-center p-3">
         <h2 class="m-0">Members Management</h2>
+        <p-button 
+          label="Add New Member"
+          icon="pi pi-plus" 
+          (onClick)="openCreateDialog()"
+          severity="info"
+          [rounded]="true"
+          [outlined]="true">
+        </p-button>
       </div>
     </ng-template>
 
@@ -37,18 +45,21 @@
             styleClass="w-full">
           </p-select>
         </div>
-        <div class="col-12 md:col-3">
+        <div class="field col-12 md:col-6 lg:col-4 flex align-items-end">
           <p-button 
             label="Clear Filters" 
             icon="pi pi-filter-slash"
             [outlined]="true"
-            severity="secondary"
+            severity="warn"
             (onClick)="clearFilters()"
             styleClass="w-full">
           </p-button>
         </div>
       </div>
     </div>
+  </p-card>
+    <p-card>
+
 
     <!-- Members Table -->
     <p-table 
@@ -490,6 +501,114 @@
         label="Save" 
         icon="pi pi-check"
         (onClick)="isEditMode ? saveMember() : saveProfile()">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Create Member Dialog (Admin Only) -->
+<p-dialog 
+  [(visible)]="createDialogVisible"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  header="Create New Member"
+  (onHide)="closeCreateDialog()">
+  
+  <div class="p-3 pt-4">
+    <div class="grid">
+      <!-- First Name -->
+      <div class="col-12 md:col-6 mb-3">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="newFirstName"
+            [(ngModel)]="newMember.firstName"
+            class="w-full" />
+          <label for="newFirstName">First Name *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Last Name -->
+      <div class="col-12 md:col-6 mb-3">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="newLastName"
+            [(ngModel)]="newMember.lastName"
+            class="w-full" />
+          <label for="newLastName">Last Name *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Email -->
+      <div class="col-12 mb-3">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="newEmail"
+            type="email"
+            [(ngModel)]="newMember.email"
+            class="w-full" />
+          <label for="newEmail">Email *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Password -->
+      <div class="col-12 mb-3">
+        <p-floatlabel>
+          <p-password 
+            id="newPassword"
+            [(ngModel)]="newMemberPassword"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full" />
+          <label for="newPassword">Password *</label>
+        </p-floatlabel>
+        <small class="text-600">Minimum 6 characters</small>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="col-12 mb-3">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="newPhoneNumber"
+            [(ngModel)]="newMember.phoneNumber"
+            class="w-full" />
+          <label for="newPhoneNumber">Phone Number *</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Address -->
+      <div class="col-12 mb-3">
+        <p-floatlabel>
+          <textarea 
+            pInputTextarea 
+            id="newAddress"
+            [(ngModel)]="newMember.address"
+            rows="3"
+            class="w-full">
+          </textarea>
+          <label for="newAddress">Address</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-content-end">
+      <p-button 
+        label="Cancel" 
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="closeCreateDialog()">
+      </p-button>
+      <p-button 
+        label="Create Member" 
+        icon="pi pi-check"
+        severity="success"
+        (onClick)="createMember()">
       </p-button>
     </div>
   </ng-template>
