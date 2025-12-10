@@ -66,12 +66,24 @@
       
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="book.title">Book Title</th>
-          <th pSortableColumn="member.firstName" *ngIf="isAdmin">Member</th>
-          <th pSortableColumn="borrowDate">Borrow Date</th>
-          <th pSortableColumn="dueDate">Due Date</th>
-          <th pSortableColumn="returnDate">Return Date</th>
-          <th pSortableColumn="status">Status</th>
+          <th pSortableColumn="book.title">Book Title
+            <p-sortIcon field="book.title"></p-sortIcon>
+          </th>
+          <th pSortableColumn="member.firstName" *ngIf="isAdmin">Member
+            <p-sortIcon field="member.firstName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="borrowDate">Borrow Date
+            <p-sortIcon field="borrowDate"></p-sortIcon>
+          </th>
+          <th pSortableColumn="dueDate">Due Date
+            <p-sortIcon field="dueDate"></p-sortIcon>
+          </th>
+          <th pSortableColumn="returnDate">Return Date
+            <p-sortIcon field="returnDate"></p-sortIcon>
+          </th>
+          <th pSortableColumn="status">Status
+            <p-sortIcon field="status"></p-sortIcon>
+          </th>
           <th pSortableColumn="lateFee">Late Fee</th>
           <th *ngIf="isAdmin">Actions</th>
         </tr>

@@ -58,34 +58,43 @@
   }
 }
 
-// Table styling
-::ng-deep {
-  .p-datatable {
-    .p-datatable-thead > tr > th {
-      background: var(--primary-color);
-      color: white;
-      font-weight: 600;
-      border: none;
-
-      &:first-child {
-        border-top-left-radius: 8px;
-      }
-
-      &:last-child {
-        border-top-right-radius: 8px;
-      }
-
-      .p-sortable-column-icon {
-        color: white;
-      }
+// Members component styling
+:host {
+  display: block;
+  
+  ::ng-deep {
+    .p-card-body {
+      padding: 1.25rem;
     }
 
-    .p-datatable-tbody > tr {
-      transition: background-color 0.2s;
+    // Add spacing between filter fields
+    .formgrid .field {
+      margin-bottom: 1.5rem;
+    }
 
-      &:hover {
-        background: var(--surface-100);
+    .p-datatable .p-datatable-thead > tr > th {
+      background-color: var(--primary-color);
+      font-weight: 600;
+      color: white;
+      
+      // Make sort icons white
+      .p-icon {
+        color: white !important;
       }
+      
+      svg {
+        fill: white !important;
+        color: white !important;
+      }
+    }
+    
+    // Rounded corners on first and last header cells
+    .p-datatable .p-datatable-thead > tr > th:first-child {
+      border-top-left-radius: 8px;
+    }
+    
+    .p-datatable .p-datatable-thead > tr > th:last-child {
+      border-top-right-radius: 8px;
     }
   }
 }
