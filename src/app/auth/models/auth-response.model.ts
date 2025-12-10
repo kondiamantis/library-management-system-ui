@@ -8,5 +8,6 @@ export interface AuthResponse {
   firstName: string;
   lastName: string;
   role: Role;
+  isActive?: boolean; // Member active status
 }
 

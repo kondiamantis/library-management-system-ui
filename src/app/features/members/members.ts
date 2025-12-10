@@ -164,6 +164,8 @@ export class MembersComponent implements OnInit {
       message: `Are you sure you want to ${member.isActive ? 'deactivate' : 'activate'} ${member.firstName} ${member.lastName}?`,
       header: 'Confirm Action',
       icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-success',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         this.memberService.toggleMemberStatus(member.id!).subscribe({
           next: () => {

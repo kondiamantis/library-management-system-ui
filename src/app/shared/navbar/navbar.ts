@@ -69,12 +69,6 @@ export class Navbar implements OnInit, OnDestroy {
 
     this.items = [
       {
-        label: 'Home',
-        icon: 'pi pi-home',
-        routerLink: '/dashboard',
-        styleClass: currentUrl.includes('/dashboard') ? 'active-menu-item' : ''
-      },
-      {
         label: 'Books',
         icon: 'pi pi-book',
         routerLink: '/books',

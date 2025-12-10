@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import { AuthResponse } from '../models/auth-response.model';
@@ -41,8 +41,25 @@ export class AuthService {
     return this.currentUserSubject.value?.role === Role.MEMBER;
   }
 
+  public get isUserActive(): boolean {
+    const user = this.currentUserSubject.value;
+    // Admins are always considered active
+    if (user?.role === Role.ADMIN) {
+      return true;
+    }
+    // For members, check isActive status
+    return user?.isActive ?? false;
+  }
+
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
+      map(response => {
+        // Check if user is active (for members)
+        if (response.role === Role.MEMBER && response.isActive === false) {
+          throw new Error('Your account has been deactivated. Please contact an administrator.');
+        }
+        return response;
+      }),
       tap(response => {
         const user: User = {
           id: response.id,
@@ -50,7 +67,7 @@ export class AuthService {
           firstName: response.firstName,
           lastName: response.lastName,
           role: response.role,
-          isActive: true
+          isActive: response.isActive ?? true // Use response value or default to true for admins
         };
         localStorage.setItem('jwtToken', response.token);
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -84,18 +101,39 @@ export class AuthService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';
+    
     if (error.error instanceof ErrorEvent) {
+      // Client-side error
       errorMessage = `Error: ${error.error.message}`;
     } else {
+      // Server-side error
       if (error.status === 400 && error.error) {
-        errorMessage = error.error;
+        errorMessage = typeof error.error === 'string' ? error.error : error.error.message || 'Bad request';
       } else if (error.status === 401) {
         errorMessage = 'Invalid credentials. Please try again.';
+      } else if (error.status === 403) {
+        // Extract message from 403 Forbidden response
+        // Backend returns string directly in body
+        if (typeof error.error === 'string') {
+          errorMessage = error.error;
+        } else if (error.error && typeof error.error === 'object' && error.error.message) {
+          errorMessage = error.error.message;
+        } else {
+          errorMessage = 'Your account has been deactivated. Please contact an administrator.';
+        }
       } else {
-        errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        // For other errors, try to extract message
+        if (typeof error.error === 'string') {
+          errorMessage = error.error;
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else {
+          errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+        }
       }
     }
-    console.error(errorMessage);
+    
+    console.error('Auth Error:', errorMessage);
     return throwError(() => new Error(errorMessage));
   }
 }

@@ -299,6 +299,20 @@ export class BooksComponent implements OnInit {
       return;
     }
   
+    // For members, check if their account is active
+    if (this.isMember) {
+      const currentUser = this.authService.currentUserValue;
+      if (currentUser && currentUser.isActive === false) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Account Deactivated',
+          detail: 'Your account has been deactivated. Please contact an administrator to reactivate your account.',
+          life: 5000
+        });
+        return;
+      }
+    }
+  
     const request: BorrowingRequest = {
       bookId: this.selectedBookToBorrow.id,
       borrowingDays: this.borrowingDays

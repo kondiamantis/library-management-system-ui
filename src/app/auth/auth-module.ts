@@ -8,8 +8,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { CardModule } from 'primeng/card';
 import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -26,11 +28,15 @@ import { HttpClientModule } from '@angular/common/http';
     InputTextModule,
     FloatLabelModule,
     CardModule,
-    PasswordModule
+    PasswordModule,
+    ToastModule
   ],
   exports: [
     LoginComponent,
     SignupComponent
+  ],
+  providers: [
+    MessageService
   ]
 })
 export class AuthModule { }

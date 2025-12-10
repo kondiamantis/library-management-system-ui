@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../models/login-request.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +40,12 @@ export class LoginComponent implements OnInit {
 
     if (this.loginForm.invalid) {
       this.loading = false;
-      this.errorMessage = 'Please enter valid email and password.';
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please enter valid email and password.',
+        life: 3000
+      });
       return;
     }
 
@@ -50,7 +57,19 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        this.errorMessage = err.message || 'Login failed. Please check your credentials.';
+        const errorMsg = err.message || 'Login failed. Please check your credentials.';
+        
+        // Show error toast with appropriate severity
+        const isAccountDeactivated = errorMsg.toLowerCase().includes('deactivated');
+        
+        this.messageService.add({
+          severity: isAccountDeactivated ? 'error' : 'warn',
+          summary: isAccountDeactivated ? 'Account Deactivated' : 'Login Failed',
+          detail: errorMsg,
+          life: 5000,
+          icon: isAccountDeactivated ? 'pi pi-ban' : 'pi pi-exclamation-triangle'
+        });
+        
         this.loading = false;
       }
     });
