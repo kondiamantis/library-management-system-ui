@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
     });
 
     if (this.authService.isLoggedIn) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/books']);
     }
   }
 
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(loginRequest).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/books']);
       },
       error: (err) => {
         const errorMsg = err.message || 'Login failed. Please check your credentials.';
