@@ -221,6 +221,28 @@ export class MembersComponent implements OnInit {
       return;
     }
 
+    // Validate required fields
+    if (!this.editingMember.firstName || !this.editingMember.lastName || 
+        !this.editingMember.email || !this.editingMember.phoneNumber) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please fill in all required fields.'
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.editingMember.email)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please enter a valid email address.'
+      });
+      return;
+    }
+
     this.memberService.updateMember(this.editingMember.id, this.editingMember).subscribe({
       next: () => {
         this.loadAllMembers();
@@ -233,10 +255,11 @@ export class MembersComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error updating member:', error);
+        const errorMessage = error.error?.message || error.error || 'Failed to update member. Please try again.';
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to update member. Please try again.'
+          detail: errorMessage
         });
       }
     });

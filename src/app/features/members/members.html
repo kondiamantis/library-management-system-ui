@@ -448,17 +448,19 @@
         </p-floatlabel>
       </div>
 
-      <!-- Email (Read-only) -->
+      <!-- Email (Editable for Admin, Read-only for Members) -->
       <div class="col-12 mb-3">
         <p-floatlabel>
           <input 
             pInputText 
             id="email"
+            type="email"
             [(ngModel)]="editingMember.email"
-            [readonly]="true"
+            [readonly]="!isAdmin"
             class="w-full" />
-          <label for="email">Email</label>
+          <label for="email">Email *</label>
         </p-floatlabel>
+        <small *ngIf="!isAdmin" class="text-600">Email cannot be changed</small>
       </div>
 
       <!-- Phone Number -->
