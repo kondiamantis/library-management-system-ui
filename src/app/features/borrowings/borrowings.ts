@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { BorrowingService } from '../../core/services/borrowing.service';
+import { MemberService } from '../../core/services/member.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { Borrowing } from '../../core/models/borrowing.model';
+import { Member } from '../../core/models/member.model';
 import { BorrowingStatus } from '../../shared/enums/borrowing-status.enum';
 import { MessageService, ConfirmationService } from 'primeng/api';
 
@@ -16,8 +18,11 @@ export class BorrowingsComponent implements OnInit {
   filteredBorrowings: Borrowing[] = [];
   loading: boolean = false;
   
-  // Filter
+  // Filters
   statusFilter: string = '';
+  bookTitleFilter: string = '';
+  memberFilter: number | null = null;
+  members: Member[] = [];
   
   statusOptions = [
     { label: 'All Status', value: '' },
@@ -29,6 +34,7 @@ export class BorrowingsComponent implements OnInit {
 
   constructor(
     private borrowingService: BorrowingService,
+    private memberService: MemberService,
     private authService: AuthService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
@@ -36,6 +42,21 @@ export class BorrowingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBorrowings();
+    if (this.isAdmin) {
+      this.loadMembers();
+    }
+  }
+
+  loadMembers(): void {
+    this.memberService.getAllMembers().subscribe({
+      next: (data) => {
+        // Filter only active members
+        this.members = data.filter(m => m.isActive);
+      },
+      error: (error) => {
+        console.error('Error loading members:', error);
+      }
+    });
   }
 
   loadBorrowings(): void {
@@ -82,12 +103,18 @@ export class BorrowingsComponent implements OnInit {
   applyFilters(): void {
     this.filteredBorrowings = this.borrowings.filter(borrowing => {
       const matchesStatus = !this.statusFilter || borrowing.status === this.statusFilter;
-      return matchesStatus;
+      const matchesBookTitle = !this.bookTitleFilter || 
+        borrowing.book.title.toLowerCase().includes(this.bookTitleFilter.toLowerCase()) ||
+        borrowing.book.author.toLowerCase().includes(this.bookTitleFilter.toLowerCase());
+      const matchesMember = !this.memberFilter || borrowing.member.id === this.memberFilter;
+      return matchesStatus && matchesBookTitle && matchesMember;
     });
   }
 
   clearFilters(): void {
     this.statusFilter = '';
+    this.bookTitleFilter = '';
+    this.memberFilter = null;
     this.filteredBorrowings = this.borrowings;
   }
 
@@ -149,6 +176,14 @@ export class BorrowingsComponent implements OnInit {
 
   getMemberFullName(borrowing: Borrowing): string {
     return `${borrowing.member.firstName} ${borrowing.member.lastName}`;
+  }
+
+  getSelectedMemberName(): string {
+    if (!this.memberFilter) {
+      return '';
+    }
+    const member = this.members.find(m => m.id === this.memberFilter);
+    return member ? `${member.firstName} ${member.lastName}` : '';
   }
 
   canReturn(borrowing: Borrowing): boolean {

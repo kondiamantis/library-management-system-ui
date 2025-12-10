@@ -15,8 +15,50 @@
     </ng-template>
     
     <div class="formgrid grid">
+      <!-- Book Title Search -->
+      <div class="field col-12 md:col-6 lg:col-3">
+        <p-floatlabel>
+          <input 
+            pInputText 
+            id="bookTitleFilter"
+            [(ngModel)]="bookTitleFilter"
+            (input)="applyFilters()"
+            placeholder="Search by book title or author" 
+            class="w-full" />
+          <label for="bookTitleFilter">Search Book</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Member Filter (Admin Only) -->
+      <div class="field col-12 md:col-6 lg:col-3" *ngIf="isAdmin">
+          <p-select 
+            inputId="memberFilter"
+            [(ngModel)]="memberFilter"
+            [options]="members"
+            optionValue="id"
+            [filter]="true"
+            filterBy="firstName,lastName,email"
+            (onChange)="applyFilters()"
+            placeholder="All Members"
+            styleClass="w-full"
+            [showClear]="true"
+            appendTo="body">
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="memberFilter">
+                {{ getSelectedMemberName() }}
+              </div>
+            </ng-template>
+            <ng-template let-member pTemplate="item">
+              <div>
+                <div class="font-semibold">{{ member.firstName }} {{ member.lastName }}</div>
+                <div class="text-sm text-600">{{ member.email }}</div>
+              </div>
+            </ng-template>
+          </p-select>
+      </div>
+
       <!-- Status Filter -->
-      <div class="field col-12 md:col-6 lg:col-4">
+      <div class="field col-12 md:col-6 lg:col-3">
           <p-select 
             inputId="statusFilter"
             [(ngModel)]="statusFilter" 
@@ -24,12 +66,13 @@
             (onChange)="applyFilters()"
             optionLabel="label"
             optionValue="value"
+            placeholder="All Status"
             styleClass="w-full">
           </p-select>
       </div>
 
       <!-- Clear Filters Button -->
-      <div class="field col-12 md:col-6 lg:col-4 flex align-items-end">
+      <div class="field col-12 md:col-6 lg:col-3 flex align-items-end">
         <p-button 
           label="Clear Filters" 
           icon="pi pi-filter-slash" 
